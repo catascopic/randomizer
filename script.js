@@ -1,4 +1,7 @@
+'use strict';
+
 var deck = [];
+var revealed = [];
 
 var grabbed = null;
 var offsetX;
@@ -14,19 +17,15 @@ const CARD_HEIGHT = CARD_WIDTH;
 
 function grab(e, card) {
 	grabbed = card;
-	grabbed.reveal();
 	offsetX = e.clientX - grabbed.x;
 	offsetY = e.clientY - grabbed.y;
 	screenWidth = document.body.scrollWidth;
 	screenHeight = document.body.scrollHeight;
-	moved = false;
+
 }
 
 function release(e) {
 	grabbed = null;
-	if (!moved) {
-		console.log('flip');
-	}
 }
 
 function move(e) {
@@ -34,7 +33,6 @@ function move(e) {
 		grabbed.setPosition(
 				bound(e.clientX - offsetX, 0, screenWidth  - CARD_WIDTH),
 				bound(e.clientY - offsetY, 0, screenHeight - CARD_HEIGHT));
-		moved = true;
 	}
 }
 
@@ -47,7 +45,7 @@ function snap(value, min, max, gridSize) {
 }
 
 function snapAll() {
-	for (let card of deck) {
+	for (let card of revealed) {
 		card.setPosition(Math.round(card.x / 20) * 20, Math.round(card.y / 20) * 20);
 	}
 }
@@ -57,48 +55,94 @@ function shortcut(e) {
 		case 'g':
 			snapAll();
 			break;
+		case 'b':
+			if (grabbed != null) moveToBottom(grabbed);
+			break;
+		case 's':
+			shuffle(deck);
+			break;
 	}
 }
 
-function init() {}
+function drawCard(e) {
+	if (deck.length) {
+		let card = createCard(deck.pop());
+		revealed.push(card);
+		grab(e, card);
+	}
+	updateDeck();
+}
+
+function updateDeck() {
+	document.getElementById('deck').innerText = 'deck (' + deck.length + ')';
+}
+
+function moveToBottom(card) {
+	card.hide();
+	deck.unshift(card.data);
+	updateDeck();
+	grabbed = null;
+}
+
+function init() {
+	let suits = ['\u2660', '\u2665', '\u2666', '\u2663'];
+	let ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'K', 'Q', 'K'];
+	for (let i = 0; i < 52; i++) {
+		deck.push({
+			suit: suits[Math.floor(i / 13)],
+			rank: ranks[i % 13]
+		});
+	}
+}
 
 window.onload = function() {
-	for (let i = 0; i < 52; i++) {
-		createCard(i);
-	}
+	updateDeck();
 }
 
-function createCard() {
-	let cardNode = document.createElement('div');
-	let color = randomColor();
-	cardNode.classList.add('card');
-	cardNode.style['z-index'] = zIndex++;
-	cardNode.innerText = '???';
-
-	let card = {
+function createCard(data) {
+	const node = document.createElement('div');
+	const card = {
 		x: 0,
 		y: 0,
+		data: data,
 		setPosition: function(x, y) {
 			this.x = x;
 			this.y = y;
-			cardNode.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+			node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
 		},
-		reveal: function() {
-			cardNode.style['color'] = color.text;
-			cardNode.style['background-color'] = color.name;
-			cardNode.innerText = color.name;
+		hide: function() {
+			node.remove();
 		}
 	};
-
-	cardNode.onmousedown = function(e) {
-		cardNode.style['z-index'] = zIndex++;
+	
+	node.classList.add('card');
+	node.style['z-index'] = zIndex++;
+	node.style['color'] = data.suit == '\u2665' || data.suit == '\u2666' ? 'red' : 'black';
+	node.innerText = data.rank + data.suit;
+	node.onmousedown = function(e) {
+		node.style['z-index'] = zIndex++;
 		grab(e, card);
 	};
-	document.body.appendChild(cardNode);
-	deck.push(card);
+	
+	document.body.appendChild(node);
+	return card;
 }
 
+function shuffle(array) {
+	for (let i = array.length; i > 1; i--) {
+		swap(array, i - 1, randInt(0, i));
+	}
+}
 
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function swap(array, i, j) {
+	let temp = array[i];
+	array[i] = array[j];
+	array[j] = temp;
+}
 
 
 

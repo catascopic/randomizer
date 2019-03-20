@@ -15,16 +15,32 @@ html, body {
 	justify-content: center;
 	align-items: center;
 	font-family: monospace;
-	font-size: 12px;
+	font-size: 36px;
+	border: 1px dotted black;
+	background-color: white;
+	top: 0px;
+	left: 0px;
+	cursor: move;
 }
 
-.card {
-	background-color: gray;
-}
-
-.card, .noselect {
+.card, .deck, .noselect {
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+.deck {
+	height: 120px;
+	width: 120px;
+	box-sizing: border-box;
+	background-color: gray;
+	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
+	font-family: monospace;
+	font-size: 12px;
+	cursor: pointer;
 }
