@@ -15,9 +15,7 @@ html, body {
 	justify-content: center;
 	align-items: center;
 	font-family: monospace;
-	font-size: 36px;
-	border: 1px dotted black;
-	background-color: white;
+	font-size: 12px;
 	top: 0px;
 	left: 0px;
 	cursor: move;

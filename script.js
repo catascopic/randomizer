@@ -85,13 +85,8 @@ function moveToBottom(card) {
 }
 
 function init() {
-	let suits = ['\u2660', '\u2665', '\u2666', '\u2663'];
-	let ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'K', 'Q', 'K'];
 	for (let i = 0; i < 52; i++) {
-		deck.push({
-			suit: suits[Math.floor(i / 13)],
-			rank: ranks[i % 13]
-		});
+		deck.push(randomColor());
 	}
 }
 
@@ -99,12 +94,12 @@ window.onload = function() {
 	updateDeck();
 }
 
-function createCard(data) {
+function createCard(color) {
 	const node = document.createElement('div');
 	const card = {
 		x: 0,
 		y: 0,
-		data: data,
+		data: color,
 		setPosition: function(x, y) {
 			this.x = x;
 			this.y = y;
@@ -117,8 +112,9 @@ function createCard(data) {
 	
 	node.classList.add('card');
 	node.style['z-index'] = zIndex++;
-	node.style['color'] = data.suit == '\u2665' || data.suit == '\u2666' ? 'red' : 'black';
-	node.innerText = data.rank + data.suit;
+	node.style['color'] = color.text;
+	node.style['background-color'] = color.name;
+	node.innerText = color.name;
 	node.onmousedown = function(e) {
 		node.style['z-index'] = zIndex++;
 		grab(e, card);
