@@ -4,14 +4,22 @@
 <head>
 <link rel="stylesheet" type="text/css" href="fonts.css">
 <link rel="stylesheet" type="text/css" href="style.css">
-<script src="script.js"></script>
+<script src="deck.js"></script>
+<script src="util.js"></script>
 <script src="colors.js"></script>
 <script src="init.jsonp"></script>
 <title>Randomizer</title>
 </head>
 <body onmouseup="release(event)" onmousemove="move(event)" onkeydown="shortcut(event)">
 
-	<div class="deck" id="deck" onmousedown="drawCard(event)">???</div>
+	<div class="modal" id="modal" onclick="start()">
+		<div class="panel" id="panel">
+			<div class="selectors" id="selectors"></div>
+			<div class="save-button" id="start-button" onclick="start()">Start</div>
+		</div>
+	</div>
+
+	<div class="deck" id="deck" onmousedown="drawCard(event)" ondragstart="event.preventDefault()">Deck (<span id="total">0</span>)</div>
 
 </body>
 </html>
