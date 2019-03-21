@@ -2,7 +2,7 @@
 
 // deck vars
 var deck;
-var revealed = [];
+var revealed = new Set();
 
 var grabbed = null;
 var offsetX;
@@ -13,8 +13,8 @@ var screenHeight;
 
 var zIndex = 0;
 
-const CARD_WIDTH = 120;
-const CARD_HEIGHT = CARD_WIDTH;
+const CARD_WIDTH = 160;
+const CARD_HEIGHT = 256;
 const GRID_SIZE = 20;
 
 var gridMode = false;
@@ -74,6 +74,9 @@ function shortcut(e) {
 		case 'b':
 			if (grabbed != null) deck.putOnBottom(grabbed);
 			break;
+		case 'z':
+			if (grabbed != null) grabbed.sendToBack();
+			break;
 		case 'm':
 		case 's':
 			deck.shuffle();
@@ -128,7 +131,7 @@ function createDeck() {
 	let total = document.getElementById('total');
 	let contents = ownedCards;
 	function updateDeck() {
-		total.innerText = contents.length;
+		// total.innerText = contents.length;
 	}
 	updateDeck();
 
@@ -136,7 +139,7 @@ function createDeck() {
 		draw: function(e) {
 			if (contents.length) {
 				let card = createCard(contents.pop());
-				revealed.push(card);
+				revealed.add(card);
 				grab(e, card);
 			}
 			updateDeck();
@@ -162,7 +165,7 @@ function createDeck() {
 }
 
 function createCard(data) {
-	const node = document.createElement('div');
+	const node = document.createElement('img');
 	const card = {
 		x: 0,
 		y: 0,
@@ -174,19 +177,33 @@ function createCard(data) {
 		},
 		hide: function() {
 			node.remove();
+			revealed.delete(this);
+		},
+		sendToBack: function() {
+			for (let card of revealed) {
+				card.moveUp();
+			}
+			node.style.zIndex = 0;
+		},
+		moveUp: function() {
+			node.style.zIndex++;
 		}
 	};
 	
 	node.classList.add('card', 'action');
 	node.style.zIndex = zIndex++;
-	node.innerText = data;
+	node.src = 'images/' + getFile(data) + '.jpg';
 	node.onmousedown = function(e) {
-		node.style['z-index'] = zIndex++;
+		node.style.zIndex = zIndex++;
 		grab(e, card);
 	};
-	
+	node.ondragstart = function(e) { e.preventDefault(); };
 	document.body.appendChild(node);
 	return card;
+}
+
+function getFile(name) {
+	return name.toLowerCase().replace(/ /, '_').replace(/[^a-z_]+/, '_');
 }
 
 function updateStartButton() {

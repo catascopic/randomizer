@@ -14,35 +14,23 @@ html, body {
 	background-repeat: repeat;
 }
 
-.card {
-	height: 120px;
-	width: 120px;
-	box-sizing: border-box;
+.card, .deck {
 	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-family: 'Roboto Mono', monospace;
-	font-size: 12px;
 	top: 0px;
 	left: 0px;
+}
+
+.card {
 	cursor: move;
 }
 
 .deck {
-	height: 120px;
-	width: 120px;
-	box-sizing: border-box;
-	color: black;
-	background-color: Gainsboro;
-	
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	
-	font-family: 'Roboto Mono', monospace;
-	font-size: 12px;
 	cursor: pointer;
+}
+
+.card, .deck {
+	width: 160px;
+	height: 256px;
 }
 
 
@@ -62,6 +50,7 @@ html, body {
 	display: flex;
 	justify-content: center;
 	overflow: auto;
+	z-index: 1;
 }
 
 .modal-hide {
@@ -135,11 +124,6 @@ html, body {
 	color: gray;
 	border-color: lightgray;
 	cursor: not-allowed;
-}
-
-.action {
-	background-color: gainsboro;
-	border: 3px outset gainsboro;
 }
 
 * {
