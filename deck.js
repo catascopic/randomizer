@@ -41,8 +41,8 @@ function measureScreen() {
 	screenWidth = document.body.scrollWidth;
 	screenHeight = document.body.scrollHeight;
 	if (gridMode) {
-		screenWidth = Math.floor(screenWidth / 20) * 20;
-		screenHeight = Math.floor(screenHeight / 20) * 20;
+		screenWidth = Math.floor(screenWidth / GRID_SIZE) * GRID_SIZE;
+		screenHeight = Math.floor(screenHeight / GRID_SIZE) * GRID_SIZE;
 	}
 }
 
@@ -85,11 +85,10 @@ function shortcut(e) {
 function toggleGrid() {
 	gridMode ^= true;
 	document.body.classList.toggle('grid', gridMode);
-	measureScreen();
 	if (gridMode) {
 		boundFunc = snap;
 		for (let card of revealed) {
-			card.setPosition(card.x, card.y);
+			card.snap();
 		}
 	} else {
 		boundFunc = bound;
@@ -180,11 +179,14 @@ function createCard(data) {
 		y: 0,
 		data: data,
 		setPosition: function(x, y) {
-			let boundX = boundFunc(x, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE);
-			let boundY = boundFunc(y, 0, screenHeight - CARD_HEIGHT, GRID_SIZE);
-			this.x = boundX;
-			this.y = boundY;
-			node.style.transform = 'translate(' + boundX + 'px, ' + boundY + 'px)';
+			this.x = boundFunc(x, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE);
+			this.y = boundFunc(y, 0, screenHeight - CARD_HEIGHT, GRID_SIZE);
+			node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
+		},
+		snap: function() {
+			this.x = Math.round(this.x / GRID_SIZE) * GRID_SIZE;
+			this.y = Math.round(this.y / GRID_SIZE) * GRID_SIZE;
+			node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
 		},
 		hide: function() {
 			node.remove();
@@ -194,6 +196,7 @@ function createCard(data) {
 			for (let card of revealed) {
 				card.moveUp();
 			}
+			zIndex++;
 			node.style.zIndex = 0;
 		},
 		moveUp: function() {
