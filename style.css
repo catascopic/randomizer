@@ -1,3 +1,15 @@
+:root {
+	--set-color: #0276FD;
+	--promo-color: #E3170D;
+	--action: gainsboro;
+	--victory: #7BCC70; /* nightvision */
+	--reaction: #4F94CD; /* steelblue */
+	--treasure: #FBDB0C; /* gummi yellow */
+	--duration: #ED9121; /* carrot */
+	--night: dimgray;
+	--reserve: #B5A642; /* brass */
+}
+
 /* DECK */
 
 
@@ -20,27 +32,97 @@ html, body {
 	left: 0px;
 }
 
-.card {
-	cursor: move;
-}
-
 .deck {
+	background-color: Aqua;
+	font-family: 'Roboto Mono', monospace;
+	font-size: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	cursor: pointer;
 }
 
+.card {
+	font-family: 'Nova Oval', monospace;
+	font-size: 14px;
+	cursor: move;
+	height: 20px;
+	outline: 2px outset rgba(0, 0, 0, .4);
+	outline-offset: -2px;
+	position: absolute;
+}
+
 .card, .deck {
-	width: 160px;
-	height: 256px;
+	width: 120px;
+	height: 120px;
+}
+
+.title {
+	text-align: center;
+	width: 120px;
+	height: 20px;
+	line-height: 22px;
+	box-sizing: border-box;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.action {
+	background-color: var(--action);
+	color: black;
+}
+
+.reaction {
+	background-color: var(--reaction);
+	color: black;
+}
+
+.treasure {
+	background-color: var(--treasure);
+	color: black;
+}
+
+.victory {
+	background-color: var(--victory);
+	color: black;
+}
+
+.reserve {
+	background-color: var(--reserve);
+	color: black;
+}
+
+.night {
+	background-color: var(--night);
+	color: white;
+}
+
+.duration {
+	background-color: var(--duration);
+	color: black;
+}
+
+.cost {
+	background-color: rgba(251,219,12,0.7);
+	font-family: 'Nova Oval', monospace;
+	font-size: 14px;
+	color: black;
+	
+	width: 16px;
+	height: 16px;
+	border-radius: 8px;
+	text-align: center;
+	line-height: 16px;
+	
+	position: absolute;
+	bottom: 2px;
+	left: 2px;
 }
 
 
 /* SELECTORS */
 
-
-:root {
-	--set-color: #0276FD;
-	--promo-color: #E3170D;  
-}
 
 .modal {
 	position: absolute;

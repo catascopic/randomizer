@@ -13,8 +13,8 @@ var screenHeight;
 
 var zIndex = 0;
 
-const CARD_WIDTH = 160;
-const CARD_HEIGHT = 256;
+const CARD_WIDTH = 120;
+const CARD_HEIGHT = CARD_WIDTH;
 const GRID_SIZE = 20;
 
 var gridMode = false;
@@ -24,7 +24,8 @@ var boundFunc = bound;
 var sets;
 var promos;
 var ownedCards;
-var lookup = {};
+var setMap = {};
+var promoMap = {};
 
 var ownedSets = new Set();
 var ownedPromos = new Set();
@@ -33,8 +34,16 @@ function grab(e, card) {
 	grabbed = card;
 	offsetX = e.clientX - grabbed.x;
 	offsetY = e.clientY - grabbed.y;
+	measureScreen();
+}
+
+function measureScreen() {
 	screenWidth = document.body.scrollWidth;
 	screenHeight = document.body.scrollHeight;
+	if (gridMode) {
+		screenWidth = Math.floor(screenWidth / 20) * 20;
+		screenHeight = Math.floor(screenHeight / 20) * 20;
+	}
 }
 
 function release(e) {
@@ -43,9 +52,7 @@ function release(e) {
 
 function move(e) {
 	if (grabbed) {
-		grabbed.setPosition(
-				boundFunc(e.clientX - offsetX, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE),
-				boundFunc(e.clientY - offsetY, 0, screenHeight - CARD_HEIGHT, GRID_SIZE));
+		grabbed.setPosition(e.clientX - offsetX, e.clientY - offsetY);
 	}
 }
 
@@ -54,22 +61,13 @@ function bound(value, min, max) {
 }
 
 function snap(value, min, max, gridSize) {
-	return Math.round(Math.min(Math.max(value, min), max) / gridSize) * gridSize;
-}
-
-function snapAll() {
-	for (let card of revealed) {
-		card.setPosition(Math.round(card.x / 20) * 20, Math.round(card.y / 20) * 20);
-	}
+	return Math.round(bound(value, min, max) / gridSize) * gridSize;
 }
 
 function shortcut(e) {
 	switch (e.key) {
 		case 'g':
-			gridMode ^= true;
-			boundFunc = gridMode ? snap : bound;
-			document.body.classList.toggle('grid', gridMode);
-			if (gridMode) snapAll();
+			toggleGrid();
 			break;
 		case 'b':
 			if (grabbed != null) deck.putOnBottom(grabbed);
@@ -84,6 +82,20 @@ function shortcut(e) {
 	}
 }
 
+function toggleGrid() {
+	gridMode ^= true;
+	document.body.classList.toggle('grid', gridMode);
+	measureScreen();
+	if (gridMode) {
+		boundFunc = snap;
+		for (let card of revealed) {
+			card.setPosition(card.x, card.y);
+		}
+	} else {
+		boundFunc = bound;
+	}
+}
+
 function drawCard(e) {
 	deck.draw(e);
 }
@@ -94,9 +106,11 @@ function start() {
 	}
 	ownedCards = [];
 	for (let setName of ownedSets) {
-		ownedCards.push(...lookup[setName].cards);
+		ownedCards.push(...setMap[setName].cards);
 	}
-	ownedCards.push(...ownedPromos);
+	for (let promoName of ownedPromos) {
+		ownedCards.push(promoMap[promoName]);
+	}
 	shuffle(ownedCards);
 	saveSession();
 	document.getElementById('modal').classList.add('modal-hide');
@@ -107,23 +121,18 @@ function init(json) {
 	sets = json.sets;
 	promos = json.promos;
 	for (let set of sets) {
-		lookup[set.name] = set;
+		setMap[set.name] = set;
+	}
+	for (let promo of promos) {
+		promoMap[promo.name] = promo;
 	}
 }
 
 window.onload = function() {
 	loadSession();
 	updateStartButton();
-	createSelectors(1,
-			ownedSets,
-			sets,
-			'set',
-			set => set.name);
-	createSelectors(2,
-			ownedPromos,
-			promos,
-			'promo',
-			promo => promo);
+	createSelectors(1, ownedSets,   sets,   'set');
+	createSelectors(2, ownedPromos, promos, 'promo');
 }
 
 function createDeck() {
@@ -131,7 +140,7 @@ function createDeck() {
 	let total = document.getElementById('total');
 	let contents = ownedCards;
 	function updateDeck() {
-		// total.innerText = contents.length;
+		total.innerText = contents.length;
 	}
 	updateDeck();
 
@@ -165,15 +174,17 @@ function createDeck() {
 }
 
 function createCard(data) {
-	const node = document.createElement('img');
+	const node = document.createElement('div');
 	const card = {
 		x: 0,
 		y: 0,
 		data: data,
 		setPosition: function(x, y) {
-			this.x = x;
-			this.y = y;
-			node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+			let boundX = boundFunc(x, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE);
+			let boundY = boundFunc(y, 0, screenHeight - CARD_HEIGHT, GRID_SIZE);
+			this.x = boundX;
+			this.y = boundY;
+			node.style.transform = 'translate(' + boundX + 'px, ' + boundY + 'px)';
 		},
 		hide: function() {
 			node.remove();
@@ -189,43 +200,59 @@ function createCard(data) {
 			node.style.zIndex++;
 		}
 	};
-	
-	node.classList.add('card', 'action');
+	loadCard(node, data);
+	node.classList.add('card');
 	node.style.zIndex = zIndex++;
-	node.src = 'images/' + getFile(data) + '.jpg';
+	// node.style.transform = 'translate(0px, 0px)';
 	node.onmousedown = function(e) {
 		node.style.zIndex = zIndex++;
 		grab(e, card);
 	};
-	node.ondragstart = function(e) { e.preventDefault(); };
 	document.body.appendChild(node);
 	return card;
 }
 
+function loadCard(div, data) {
+	const title = document.createElement('div');
+	title.innerText = data.name;
+	title.classList.add('title');
+	for (let type of data.types) {
+		title.classList.add(type.toLowerCase());
+	}
+	div.appendChild(title);
+	const image = document.createElement('img');
+	image.src = 'art/' + getFile(data.name) + '.png';
+	image.ondragstart = function(e) { e.preventDefault(); };
+	div.appendChild(image);
+	const cost = document.createElement('div');
+	cost.innerText = data.cost;
+	cost.classList.add('cost');
+	div.appendChild(cost);
+}
+
 function getFile(name) {
-	return name.toLowerCase().replace(/ /, '_').replace(/[^a-z_]+/, '_');
+	return name.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
 }
 
 function updateStartButton() {
 	document.getElementById('start-button').classList.toggle('disabled', !ownedSets.size);
 }
 
-function createSelectors(col, selectorSet, items, className, mapper) {
+function createSelectors(col, selectorSet, items, className) {
 	let row = 1;
 	for (let item of items) {
-		let name = mapper(item);
 		let node = document.createElement('div');
-		node.innerText = name;
+		node.innerText = item.name;
 		node.classList.add('selector', 'noselect', className);
 		node.style.gridRow = row++;
 		node.style.gridColumn = col;
-		if (selectorSet.has(name)) {
+		if (selectorSet.has(item.name)) {
 			node.classList.add('selected');
 		}
 		node.onclick = function(e) {
-			let selected = !selectorSet.delete(name);
+			let selected = !selectorSet.delete(item.name);
 			if (selected) {
-				selectorSet.add(name);
+				selectorSet.add(item.name);
 			}
 			node.classList.toggle('selected', selected);
 			updateStartButton();
