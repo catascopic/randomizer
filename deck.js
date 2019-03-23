@@ -20,6 +20,8 @@ const GRID_SIZE = 20;
 var gridMode = false;
 var boundFunc = bound;
 
+var selectorBox;
+
 // selector vars
 var sets;
 var promos;
@@ -31,6 +33,7 @@ var ownedSets = new Set();
 var ownedPromos = new Set();
 
 function grab(e, card) {
+	e.stopPropagation();
 	grabbed = card;
 	offsetX = e.clientX - grabbed.x;
 	offsetY = e.clientY - grabbed.y;
@@ -47,12 +50,13 @@ function measureScreen() {
 }
 
 function release(e) {
+	grabbed.stop();
 	grabbed = null;
 }
 
 function move(e) {
 	if (grabbed) {
-		grabbed.setPosition(e.clientX - offsetX, e.clientY - offsetY);
+		grabbed.setPosition(e.clientX, e.clientY);
 	}
 }
 
@@ -96,7 +100,13 @@ function toggleGrid() {
 }
 
 function drawCard(e) {
+	if (grabbed) grabbed.stop();
 	deck.draw(e);
+}
+
+function startSelectorBox(e) {
+	if (grabbed) grabbed.stop();
+	grabbed = createSelectorBox(e);
 }
 
 function start() {
@@ -132,6 +142,7 @@ window.onload = function() {
 	updateStartButton();
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');
+	document.getElementById('start-button').click();
 }
 
 function createDeck() {
@@ -179,8 +190,8 @@ function createCard(data) {
 		y: 0,
 		data: data,
 		setPosition: function(x, y) {
-			this.x = boundFunc(x, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE);
-			this.y = boundFunc(y, 0, screenHeight - CARD_HEIGHT, GRID_SIZE);
+			this.x = boundFunc(x - offsetX, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE);
+			this.y = boundFunc(y - offsetY, 0, screenHeight - CARD_HEIGHT, GRID_SIZE);
 			node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
 		},
 		snap: function() {
@@ -201,12 +212,12 @@ function createCard(data) {
 		},
 		moveUp: function() {
 			node.style.zIndex++;
-		}
+		},
+		stop: function() {}
 	};
 	loadCard(node, data);
 	node.classList.add('card');
 	node.style.zIndex = zIndex++;
-	// node.style.transform = 'translate(0px, 0px)';
 	node.onmousedown = function(e) {
 		node.style.zIndex = zIndex++;
 		grab(e, card);
@@ -236,6 +247,28 @@ function loadCard(div, data) {
 function getFile(name) {
 	return name.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
 }
+
+function createSelectorBox(e) {
+	const node = document.createElement('div');
+	node.classList.add('selector-box');
+	node.classList.remove('hide');
+	node.style.zIndex = zIndex;
+	const startX = e.clientX;
+	const startY = e.clientY;
+	document.body.appendChild(node);
+	return {
+		setPosition: function(x, y) {
+			node.style.transform = 'translate(' + Math.min(x, startX) + 'px, ' + Math.min(y, startY) + 'px)';
+			node.style.width = Math.abs(x - startX) + 'px';
+			node.style.height = Math.abs(y - startY) + 'px';
+		},
+		stop: function() {
+			node.remove();
+		}
+	};
+}
+
+// SELECTORS
 
 function updateStartButton() {
 	document.getElementById('start-button').classList.toggle('disabled', !ownedSets.size);

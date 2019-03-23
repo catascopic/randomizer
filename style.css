@@ -34,7 +34,7 @@ html, body {
 
 .deck {
 	background-color: Aqua;
-	font-family: 'Roboto Mono', monospace;
+	font-family: 'PT Mono', monospace;
 	font-size: 16px;
 	display: flex;
 	align-items: center;
@@ -104,20 +104,26 @@ html, body {
 }
 
 .cost {
-	background-color: rgba(251,219,12,0.7);
+	background-image: url(coin.svg);
 	font-family: 'Nova Oval', monospace;
 	font-size: 14px;
 	color: black;
 	
 	width: 16px;
 	height: 16px;
-	border-radius: 8px;
 	text-align: center;
 	line-height: 16px;
 	
 	position: absolute;
 	bottom: 2px;
 	left: 2px;
+}
+
+.selector-box {
+	border: 1px dotted black;
+	box-sizing: border-box;
+	position: absolute;
+	background-color: rgba(0, 0, 128, 0.3);
 }
 
 
