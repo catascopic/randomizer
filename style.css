@@ -62,7 +62,6 @@ html, body {
 	width: 120px;
 	height: 20px;
 	line-height: 22px;
-	box-sizing: border-box;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -123,7 +122,7 @@ html, body {
 	border: 1px dotted black;
 	box-sizing: border-box;
 	position: absolute;
-	background-color: rgba(0, 0, 128, 0.3);
+	/* background-color: rgba(0, 0, 128, 0.3); */
 }
 
 
@@ -219,4 +218,8 @@ html, body {
 	-webkit-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+img {
+	display: block;
 }
