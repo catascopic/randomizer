@@ -24,5 +24,16 @@
 
 	<div class="deck" id="deck" onmousedown="drawCard(event)" ondragstart="event.preventDefault()">Deck (<span id="total">0</span>)</div>
 	
+	<template id="card">
+		<div class="card">
+			<div class="title"></div>
+			<img>
+			<div class="cost"></div>
+			<div class="overlay" />
+		</div>
+	</template>
+	
+	<div class="selector-box hide" id="selector-box" />
+	
 </body>
 </html>

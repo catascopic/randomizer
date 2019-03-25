@@ -34,11 +34,19 @@ var promoMap = {};
 var ownedSets = new Set();
 var ownedPromos = new Set();
 
-function grab(e, card) {
+var selected = new Set();
+
+function grab(e, grabbedCard) {
 	e.stopPropagation();
-	grabbed = card;
-	offsetX = e.clientX - grabbed.x;
-	offsetY = e.clientY - grabbed.y;
+	if (selected.has(grabbedCard)) {
+		for (let card of selected) {
+			card.start(e);
+		}
+	} else {
+		clearSelected();
+		grabbedCard.start(e);
+	}
+	grabbed = grabbedCard;
 	measureScreen();
 }
 
@@ -58,7 +66,13 @@ function release(e) {
 
 function move(e) {
 	if (grabbed) {
-		grabbed.setPosition(e.clientX, e.clientY);
+		if (selected.size) {
+			for (let card of selected) {
+				card.setPosition(e.clientX, e.clientY);
+			}
+		} else {
+			grabbed.setPosition(e.clientX, e.clientY);
+		}
 	}
 }
 
@@ -107,8 +121,15 @@ function drawCard(e) {
 }
 
 function startSelectorBox(e) {
-	if (grabbed) grabbed.stop();
-	grabbed = createSelectorBox(e);
+	clearSelected();
+	selectorBox.start(e);
+	grabbed = selectorBox;
+}
+
+function clearSelected() {
+	for (let card of selected) {
+		card.select(false);
+	}
 }
 
 function start() {
@@ -124,7 +145,7 @@ function start() {
 	}
 	shuffle(ownedCards);
 	saveSession();
-	document.getElementById('modal').classList.add('modal-hide');
+	document.getElementById('modal').classList.add('hide');
 	deck = new Deck(ownedCards);
 }
 
@@ -144,33 +165,53 @@ window.onload = function() {
 	updateStartButton();
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');
-	
+	selectorBox = createSelectorBox();
 }
 window.onmouseup = release;
 window.onmousemove = move;
 window.onmousedown = startSelectorBox;
 
-
-function createSelectorBox(e) {
-	const node = document.createElement('div');
-	node.classList.add('selector-box');
-	node.classList.remove('hide');
-	node.style.zIndex = zIndex;
-	const startX = e.clientX;
-	const startY = e.clientY;
-	document.body.appendChild(node);
+function createSelectorBox() {
+	const node = document.getElementById('selector-box');
 	return {
+		start: function(e) {
+			node.classList.remove('hide');
+			node.style.zIndex = zIndex;
+			this.startX = e.clientX;
+			this.startY = e.clientY;
+			this.setPosition(this.startX, this.startY);
+		},
 		setPosition: function(x, y) {
+			this.x = x;
+			this.y = y;
 			node.style.transform = 'translate('
-					+ Math.min(x, startX) + 'px, '
-					+ Math.min(y, startY) + 'px)';
-			node.style.width = Math.abs(x - startX) + 'px';
-			node.style.height = Math.abs(y - startY) + 'px';
+					+ Math.min(x, this.startX) + 'px, '
+					+ Math.min(y, this.startY) + 'px)';
+			node.style.width = Math.abs(x - this.startX) + 'px';
+			node.style.height = Math.abs(y - this.startY) + 'px';
 		},
 		stop: function() {
-			node.remove();
+			let boxX = Math.min(this.x, this.startX);
+			let boxY = Math.min(this.y, this.startY);
+			let boxWidth = Math.abs(this.x - this.startX);
+			let boxHeight = Math.abs(this.y - this.startY);
+			for (let card of revealed) {
+				if (overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight)) {
+					card.select(true);
+				}
+			}
+			node.classList.add('hide');
 		}
 	};
+}
+
+function overlap(cardX, cardY, boxX, boxY, boxWidth, boxHeight) {
+	return (inRange(cardX, boxX, boxX + boxWidth)  || inRange(boxX, cardX, cardX + CARD_WIDTH))
+		&& (inRange(cardY, boxY, boxY + boxHeight) || inRange(boxY, cardY, cardY + CARD_HEIGHT));
+}
+
+function inRange(value, min, max) {
+	return value >= min && value <= max; 
 }
 
 // SELECTORS

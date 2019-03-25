@@ -47,9 +47,9 @@ html, body {
 	font-size: 14px;
 	cursor: move;
 	height: 20px;
-	outline: 2px outset rgba(0, 0, 0, .4);
-	outline-offset: -2px;
 	position: absolute;
+	display: flex;
+	flex-direction: column;
 }
 
 .card, .deck {
@@ -67,41 +67,6 @@ html, body {
 	text-overflow: ellipsis;
 }
 
-.action {
-	background-color: var(--action);
-	color: black;
-}
-
-.reaction {
-	background-color: var(--reaction);
-	color: black;
-}
-
-.treasure {
-	background-color: var(--treasure);
-	color: black;
-}
-
-.victory {
-	background-color: var(--victory);
-	color: black;
-}
-
-.reserve {
-	background-color: var(--reserve);
-	color: black;
-}
-
-.night {
-	background-color: var(--night);
-	color: white;
-}
-
-.duration {
-	background-color: var(--duration);
-	color: black;
-}
-
 .cost {
 	background-image: url(coin.svg);
 	font-family: 'Nova Oval', monospace;
@@ -116,6 +81,21 @@ html, body {
 	position: absolute;
 	bottom: 2px;
 	left: 2px;
+}
+
+.overlay {
+	border: 2px outset rgba(0, 0, 0, .4);
+	box-sizing: border-box;
+	background-clip: border-box;
+	
+	width: 100%;
+	height: 100%;
+	
+	position: absolute;
+}
+
+.overlay.card-selected {
+	background: rgba(0, 0, 255, .3);
 }
 
 .selector-box {
@@ -138,10 +118,6 @@ html, body {
 	justify-content: center;
 	overflow: auto;
 	z-index: 1;
-}
-
-.modal-hide {
-	display: none;
 }
 
 .panel {
@@ -220,6 +196,41 @@ html, body {
 	user-select: none;
 }
 
-img {
-	display: block;
+.action {
+	background-color: var(--action);
+	color: black;
+}
+
+.reaction {
+	background-color: var(--reaction);
+	color: black;
+}
+
+.treasure {
+	background-color: var(--treasure);
+	color: black;
+}
+
+.victory {
+	background-color: var(--victory);
+	color: black;
+}
+
+.reserve {
+	background-color: var(--reserve);
+	color: black;
+}
+
+.night {
+	background-color: var(--night);
+	color: white;
+}
+
+.duration {
+	background-color: var(--duration);
+	color: black;
+}
+
+.hide {
+	display: none;
 }
