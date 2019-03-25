@@ -13,6 +13,10 @@ class SelectorBox extends Draggable {
 		this.setPosition(this.startX, this.startY);
 	}
 
+	move(e) {
+		this.setPosition(e.clientX, e.clientY);
+	}
+	
 	setPosition(x, y) {
 		this.x = x;
 		this.y = y;

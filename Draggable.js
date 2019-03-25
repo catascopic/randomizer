@@ -4,7 +4,7 @@ class Draggable {
 		// do nothing
 	}
 	
-	setPosition() {
+	move() {
 		// do nothing
 	}
 	

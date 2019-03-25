@@ -5,6 +5,8 @@ var revealed = new Set();
 var selected = new Set();
 var deck;
 var selectorBox;
+const SELECTION = new Selection();
+var lastCard = {x: 0, y:0};
 
 var screenWidth;
 var screenHeight;
@@ -25,17 +27,10 @@ var ownedCards;
 var ownedSets = new Set();
 var ownedPromos = new Set();
 
-function grab(e, grabbedCard) {
+function grab(e, target) {
 	e.stopPropagation();
-	if (selected.has(grabbedCard)) {
-		for (let card of selected) {
-			card.start(e);
-		}
-	} else {
-		deselectAll();
-		grabbedCard.start(e);
-	}
-	grabbed = grabbedCard;
+	target.start(e);
+	grabbed = target;
 	measureScreen();
 }
 
@@ -57,13 +52,7 @@ function release(e) {
 
 function move(e) {
 	if (grabbed) {
-		if (selected.size) {
-			for (let card of selected) {
-				card.setPosition(e.clientX, e.clientY);
-			}
-		} else {
-			grabbed.setPosition(e.clientX, e.clientY);
-		}
+		grabbed.move(e);
 	}
 }
 
@@ -86,6 +75,8 @@ function shortcut(e) {
 		case 'r':
 			replace();
 			break;
+		case 'n':
+			getNext();
 		case 'z':
 			if (grabbed != null) grabbed.sendToBack();
 			break;
@@ -136,6 +127,10 @@ function replace() {
 	}
 }
 
+function getNext() {
+	deck.place();
+}
+
 function drawCard(e) {
 	if (grabbed) grabbed.stop();
 	deck.draw(e);
@@ -183,6 +178,7 @@ function init(json) {
 
 window.onload = function() {
 	loadSession();
+	measureScreen();
 	updateStartButton();
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');

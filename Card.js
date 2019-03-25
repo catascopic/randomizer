@@ -6,29 +6,40 @@ class Card extends Draggable {
 		this.y = 0;
 		this.data = data;
 		this.node = node;
+		this.isHighlighted = false;
 	}
 
 	start(e) {
 		this.offsetX = e.clientX - this.x;
 		this.offsetY = e.clientY - this.y;
-		this.node.style.zIndex = zIndex++;
+		this.toTop();
+		lastCard = this;
+	}
+
+	move(e) {
+		this.setPosition(e.clientX - this.offsetX, e.clientY - this.offsetY);
+		lastCard = this;
 	}
 
 	setPosition(x, y) {
-		this.x = boundFunc(x - this.offsetX, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE);
-		this.y = boundFunc(y - this.offsetY, 0, screenHeight - CARD_HEIGHT, GRID_SIZE);
-		this.place();
+		this.x = boundFunc(x, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE);
+		this.y = boundFunc(y, 0, screenHeight - CARD_HEIGHT, GRID_SIZE);
+		this.node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
 	}
 
 	snap() {
 		this.x = Math.round(this.x / GRID_SIZE) * GRID_SIZE;
 		this.y = Math.round(this.y / GRID_SIZE) * GRID_SIZE;
-		this.place();
+		this.node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
 	}
 
 	hide() {
 		this.node.remove();
 		revealed.delete(this);
+	}
+	
+	toTop() {
+		this.node.style.zIndex = zIndex++;
 	}
 
 	sendToBack() {
@@ -57,11 +68,7 @@ class Card extends Draggable {
 		if (selected.delete(card)) {
 			selected.add(this);
 		}
-		this.place();
-	}
-
-	place() {
-		this.node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
+		this.node.style.transform = card.node.style.transform;
 	}
 
 }
@@ -71,7 +78,12 @@ function createCard(data) {
 	let card = new Card(data, node);
 	node.style.zIndex = zIndex++;
 	node.onmousedown = function(e) {
-		grab(e, card);
+		if (selected.has(card)) {
+			grab(e, SELECTION);
+		} else {
+			deselectAll();
+			grab(e, card);
+		}
 	};
 	for (let type of data.types) {
 		node.classList.add(type.toLowerCase());
