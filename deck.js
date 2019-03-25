@@ -14,19 +14,26 @@ class Deck {
 	draw(e) {
 		if (this.contents.length) {
 			let card = createCard(this.contents.pop());
-			revealed.add(card);
 			grab(e, card);
 		}
 		this.updateDeck();
 	}
-		
+
 	putOnBottom(card) {
 		card.hide();
 		this.contents.unshift(card.data);
 		this.updateDeck();
 		grabbed = null;
 	}
-	
+
+	replace(card) {
+		card.hide();
+		this.contents.unshift(card.data);
+		let newCard = createCard(this.contents.pop());
+		newCard.replace(card);
+		return newCard;
+	}
+
 	shuffle() {
 		shuffle(this.contents);
 		this.node.animate([

@@ -50,6 +50,8 @@ html, body {
 	position: absolute;
 	display: flex;
 	flex-direction: column;
+	outline: 2px outset rgba(0, 0, 0, .4);
+	outline-offset: -2px;
 }
 
 .card, .deck {
@@ -83,19 +85,12 @@ html, body {
 	left: 2px;
 }
 
-.overlay {
-	border: 2px outset rgba(0, 0, 0, .4);
-	box-sizing: border-box;
-	background-clip: border-box;
-	
+.card-selected:after {
+	content: "";
 	width: 100%;
 	height: 100%;
-	
 	position: absolute;
-}
-
-.card-selected .overlay {
-	background: rgba(0, 0, 255, .3);
+	background: rgba(0, 0, 255, .2);
 }
 
 .selector-box {

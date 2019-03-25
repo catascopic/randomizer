@@ -1017,7 +1017,7 @@ init({
             "Treasure"
           ],
           "set": "Prosperity",
-          "text": "{$1}\n\n---\nWhile this is in play, when you buy a non-Victory card costing {$4} or less, gain a copy of it."
+          "text": "{$1}\n---\nWhile this is in play, when you buy a non-Victory card costing {$4} or less, gain a copy of it."
         },
         {
           "name": "Mint",

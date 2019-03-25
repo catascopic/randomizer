@@ -8,7 +8,6 @@ var selectorBox;
 
 var screenWidth;
 var screenHeight;
-
 var zIndex = 0;
 
 const CARD_WIDTH = 120;
@@ -82,7 +81,10 @@ function shortcut(e) {
 			toggleGrid();
 			break;
 		case 'b':
-			if (grabbed != null) deck.putOnBottom(grabbed);
+			putOnBottom();
+			break;
+		case 'r':
+			replace();
 			break;
 		case 'z':
 			if (grabbed != null) grabbed.sendToBack();
@@ -110,6 +112,30 @@ function toggleGrid() {
 	}
 }
 
+function putOnBottom() {
+	if (selected.size) {
+		for (let card of selected) {
+			deck.putOnBottom(card);
+		}
+	}
+	if (grabbed != null) {
+		deck.putOnBottom(grabbed);
+	}
+}
+
+function replace() {
+	let replaced;
+	if (selected.size) {
+		// copy because we're going to be modifying selected
+		let copy = Array.from(selected);
+		for (let card of copy) {
+			deck.replace(card);
+		}
+	} else if (grabbed != null) {
+		grabbed = deck.replace(grabbed);
+	}
+}
+
 function drawCard(e) {
 	if (grabbed) grabbed.stop();
 	deck.draw(e);
@@ -123,8 +149,9 @@ function startSelectorBox(e) {
 
 function deselectAll() {
 	for (let card of selected) {
-		card.deselect();
+		card.highlight(false);
 	}
+	selected.clear();
 }
 
 function start() {
@@ -143,6 +170,7 @@ function start() {
 		}
 	}
 	shuffle(ownedCards);
+	ownedCards.sort((a, b) => a.types.length - b.types.length);
 	saveSession();
 	document.getElementById('modal').classList.add('hide');
 	deck = new Deck(ownedCards);
@@ -158,54 +186,12 @@ window.onload = function() {
 	updateStartButton();
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');
-	selectorBox = createSelectorBox();
+	selectorBox = new SelectorBox(document.getElementById('selector-box'));
 }
+
 window.onmouseup = release;
 window.onmousemove = move;
 window.onmousedown = startSelectorBox;
-
-function createSelectorBox() {
-	const node = document.getElementById('selector-box');
-	return {
-		start: function(e) {
-			node.classList.remove('hide');
-			node.style.zIndex = zIndex;
-			this.startX = e.clientX;
-			this.startY = e.clientY;
-			this.setPosition(this.startX, this.startY);
-		},
-		setPosition: function(x, y) {
-			this.x = x;
-			this.y = y;
-			node.style.transform = 'translate('
-					+ Math.min(x, this.startX) + 'px, '
-					+ Math.min(y, this.startY) + 'px)';
-			node.style.width = Math.abs(x - this.startX) + 'px';
-			node.style.height = Math.abs(y - this.startY) + 'px';
-		},
-		stop: function() {
-			let boxX = Math.min(this.x, this.startX);
-			let boxY = Math.min(this.y, this.startY);
-			let boxWidth = Math.abs(this.x - this.startX);
-			let boxHeight = Math.abs(this.y - this.startY);
-			for (let card of revealed) {
-				if (overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight)) {
-					card.select();
-				}
-			}
-			node.classList.add('hide');
-		}
-	};
-}
-
-function overlap(cardX, cardY, boxX, boxY, boxWidth, boxHeight) {
-	return (inRange(cardX, boxX, boxX + boxWidth)  || inRange(boxX, cardX, cardX + CARD_WIDTH))
-		&& (inRange(cardY, boxY, boxY + boxHeight) || inRange(boxY, cardY, cardY + CARD_HEIGHT));
-}
-
-function inRange(value, min, max) {
-	return value >= min && value <= max; 
-}
 
 // SELECTORS
 
@@ -243,7 +229,6 @@ function loadSession() {
 		let session = JSON.parse(sessionJson);
 		ownedSets = new Set(session.ownedSets);
 		ownedPromos = new Set(session.ownedPromos);
-		
 	}
 }
 
@@ -253,4 +238,3 @@ function saveSession() {
 		ownedPromos: Array.from(ownedPromos)
 	}));
 }
-

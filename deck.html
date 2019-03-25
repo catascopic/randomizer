@@ -2,16 +2,24 @@
 <meta charset="UTF-8">
 <html onkeydown="shortcut(event)" >
 <head>
+
 <link rel="stylesheet" type="text/css" href="fonts.css">
 <link rel="stylesheet" type="text/css" href="style.css">
+
+<script src="Deck.js"></script>
+
 <script src="Draggable.js"></script>
 <script src="Card.js"></script>
-<script src="Deck.js"></script>
+<script src="SelectorBox.js"></script>
+
 <script src="script.js"></script>
 <script src="util.js"></script>
 <script src="colors.js"></script>
+
 <script src="init.jsonp"></script>
+
 <title>Randomizer</title>
+
 </head>
 <body>
 
@@ -27,7 +35,7 @@
 	<template id="card">
 		<div class="card">
 			<div class="title"></div>
-			<img>
+			<img ondragstart="event.preventDefault()">
 			<div class="cost"></div>
 			<div class="overlay" />
 		</div>
