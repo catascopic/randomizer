@@ -26,12 +26,21 @@ class SelectorBox extends Draggable {
 		let boxWidth = Math.abs(this.x - this.startX);
 		let boxHeight = Math.abs(this.y - this.startY);
 		for (let card of revealed) {
-			card.select(overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight));
+			card.highlight(overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight));
 		}
 	}
 
 	stop() {
 		this.node.classList.add('hide');
+		let boxX = Math.min(this.x, this.startX);
+		let boxY = Math.min(this.y, this.startY);
+		let boxWidth = Math.abs(this.x - this.startX);
+		let boxHeight = Math.abs(this.y - this.startY);
+		for (let card of revealed) {
+			if (overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight)) {
+				selected.add(card);
+			}
+		}
 	}
 
 }
