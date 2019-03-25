@@ -50,8 +50,10 @@ function measureScreen() {
 }
 
 function release(e) {
-	grabbed.stop();
-	grabbed = null;
+	if (grabbed != null) {
+		grabbed.stop();
+		grabbed = null;
+	}
 }
 
 function move(e) {

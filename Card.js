@@ -6,7 +6,6 @@ class Card extends Draggable {
 		this.y = 0;
 		this.data = data;
 		this.node = node;
-		this.overlay = node.getElementsByClassName('overlay')[0];
 	}
 	
 	start(e) {
@@ -44,18 +43,18 @@ class Card extends Draggable {
 	}
 
 	select() {
-		this.overlay.classList.add('card-selected');
+		this.node.classList.add('card-selected');
 		selected.add(this);
 	}
 	
 	deselect() {
-		this.overlay.classList.remove('card-selected');
+		this.node.classList.remove('card-selected');
 		selected.delete(this);
 	}
 }
 
 function createCard(data) {
-	let node = document.getElementById('card').cloneNode(true).content.firstElementChild;
+	let node = document.getElementById('card').content.firstElementChild.cloneNode(true);
 	let card = new Card(data, node);
 	node.style.zIndex = zIndex++;
 	node.onmousedown = function(e) {

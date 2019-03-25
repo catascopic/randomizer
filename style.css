@@ -34,7 +34,7 @@ html, body {
 
 .deck {
 	background-color: Aqua;
-	font-family: 'PT Mono', monospace;
+	font-family: 'Roboto Mono', monospace;
 	font-size: 16px;
 	display: flex;
 	align-items: center;
@@ -94,7 +94,7 @@ html, body {
 	position: absolute;
 }
 
-.overlay.card-selected {
+.card-selected .overlay {
 	background: rgba(0, 0, 255, .3);
 }
 
