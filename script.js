@@ -1,12 +1,10 @@
 'use strict';
 
-// deck vars
-var deck;
-var revealed = new Set();
-
 var grabbed = null;
-var offsetX;
-var offsetY;
+var revealed = new Set();
+var selected = new Set();
+var deck;
+var selectorBox;
 
 var screenWidth;
 var screenHeight;
@@ -20,21 +18,13 @@ const GRID_SIZE = 20;
 var gridMode = false;
 var boundFunc = bound;
 
-var selectorBox;
-
 // selector vars
 var sets;
 var promos;
 var ownedCards;
 
-// redo this
-var setMap = {};
-var promoMap = {};
-
 var ownedSets = new Set();
 var ownedPromos = new Set();
-
-var selected = new Set();
 
 function grab(e, grabbedCard) {
 	e.stopPropagation();
@@ -43,7 +33,7 @@ function grab(e, grabbedCard) {
 			card.start(e);
 		}
 	} else {
-		clearSelected();
+		deselectAll();
 		grabbedCard.start(e);
 	}
 	grabbed = grabbedCard;
@@ -99,6 +89,9 @@ function shortcut(e) {
 		case 's':
 			deck.shuffle();
 			break;
+		case 'Escape':
+			deselectAll();
+			break;
 	}
 }
 
@@ -121,14 +114,14 @@ function drawCard(e) {
 }
 
 function startSelectorBox(e) {
-	clearSelected();
+	deselectAll();
 	selectorBox.start(e);
 	grabbed = selectorBox;
 }
 
-function clearSelected() {
+function deselectAll() {
 	for (let card of selected) {
-		card.select(false);
+		card.deselect();
 	}
 }
 
@@ -137,11 +130,15 @@ function start() {
 		return;
 	}
 	ownedCards = [];
-	for (let setName of ownedSets) {
-		ownedCards.push(...setMap[setName].cards);
+	for (let set of sets) {
+		if (ownedSets.has(set.name)) {
+			ownedCards.push(...set.cards);
+		}
 	}
-	for (let promoName of ownedPromos) {
-		ownedCards.push(promoMap[promoName]);
+	for (let promo of promos) {
+		if (ownedPromos.has(promo.name)) {
+			ownedCards.push(promo);
+		}
 	}
 	shuffle(ownedCards);
 	saveSession();
@@ -152,12 +149,6 @@ function start() {
 function init(json) {
 	sets = json.sets;
 	promos = json.promos;
-	for (let set of sets) {
-		setMap[set.name] = set;
-	}
-	for (let promo of promos) {
-		promoMap[promo.name] = promo;
-	}
 }
 
 window.onload = function() {
@@ -197,7 +188,7 @@ function createSelectorBox() {
 			let boxHeight = Math.abs(this.y - this.startY);
 			for (let card of revealed) {
 				if (overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight)) {
-					card.select(true);
+					card.select();
 				}
 			}
 			node.classList.add('hide');

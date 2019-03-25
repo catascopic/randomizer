@@ -43,13 +43,14 @@ class Card extends Draggable {
 		this.node.style.zIndex++;
 	}
 
-	select(isSelected) {
-		this.overlay.classList.toggle('card-selected', isSelected);
-		if (isSelected) {
-			selected.add(this);
-		} else {
-			selected.delete(this);
-		}
+	select() {
+		this.overlay.classList.add('card-selected');
+		selected.add(this);
+	}
+	
+	deselect() {
+		this.overlay.classList.remove('card-selected');
+		selected.delete(this);
 	}
 }
 
