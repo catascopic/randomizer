@@ -13,17 +13,15 @@ class Card extends Draggable {
 		this.offsetX = e.clientX - this.x;
 		this.offsetY = e.clientY - this.y;
 		this.toTop();
-		lastCard = this;
 	}
 
 	move(e) {
 		this.setPosition(e.clientX - this.offsetX, e.clientY - this.offsetY);
-		lastCard = this;
 	}
 
 	setPosition(x, y) {
-		this.x = boundFunc(x, 0, screenWidth  - CARD_WIDTH,  GRID_SIZE);
-		this.y = boundFunc(y, 0, screenHeight - CARD_HEIGHT, GRID_SIZE);
+		this.x = boundFunc(x, 0, screenWidth  - CARD_WIDTH);
+		this.y = boundFunc(y, 0, screenHeight - CARD_HEIGHT);
 		this.node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
 	}
 

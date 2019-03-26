@@ -16,8 +16,8 @@ class Deck {
 			let card = createCard(this.contents.pop());
 			deselectAll();
 			grab(e, card);
+			this.updateDeck();
 		}
-		this.updateDeck();
 	}
 
 	putOnBottom(card) {
@@ -35,24 +35,14 @@ class Deck {
 		return newCard;
 	}
 	
-	place() {
-		let newCard = createCard(this.contents.pop());
-		this.updateDeck();
-		let x;
-		let y;
-		if (lastCard.x + (CARD_WIDTH * 2) <= screenWidth) {
-			x = lastCard.x + CARD_WIDTH;
-			y = lastCard.y;
-		} else {
-			x = 0;
-			y = lastCard.y + CARD_HEIGHT;
+	place(x, y) {
+		if (this.contents.length) {
+			let newCard = createCard(this.contents.pop());
+			this.updateDeck();
+			newCard.setPosition(x, y);
+			return newCard;
 		}
-		
-		
-		newCard.setPosition(x, y);
-		newCard.toTop();
-		lastCard = newCard;
-		return newCard;
+		return null;
 	}
 
 	shuffle() {

@@ -12,6 +12,7 @@
 <script src="Card.js"></script>
 <script src="Selection.js"></script>
 <script src="SelectorBox.js"></script>
+<script src="GeneratorBox.js"></script>
 
 <script src="script.js"></script>
 <script src="util.js"></script>
@@ -30,6 +31,17 @@
 			<div class="save-button" id="start-button" onclick="start()">Start</div>
 		</div>
 	</div>
+	
+	<div class="text-modal" id="text-modal">
+		<div class="text-box" id="text-box">
+			<div class="text-box-name">Cobbler {$5}</div>
+			<div class="text-box-text">+{$2}
+Reveal the top 3 cards of the Black Market deck. Play any number of Treasures from your hand. You may buy one of the revealed cards. Put the rest on the bottom of the Black Market deck in any order.
+
+Setup: Make a Black Market deck out of different unused Kingdom cards.</div>
+			<div class="text-box-types">Night - Duration</div>
+		</div>
+	</div>
 
 	<div class="deck" id="deck" onmousedown="drawCard(event)" ondragstart="event.preventDefault()">Deck (<span id="total">0</span>)</div>
 	
@@ -38,11 +50,12 @@
 			<div class="title"></div>
 			<img ondragstart="event.preventDefault()">
 			<div class="cost"></div>
-			<div class="overlay" />
+			<div class="overlay"></div>
 		</div>
 	</template>
 	
-	<div class="selector-box hide" id="selector-box" />
+	<div class="selector-box hide" id="selector-box"></div>
+	<div class="generator-box hide" id="generator-box"></div>
 	
 </body>
 </html>

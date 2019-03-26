@@ -4,9 +4,9 @@ var grabbed = null;
 var revealed = new Set();
 var selected = new Set();
 var deck;
-var selectorBox;
+var SELECTOR_BOX;
+var GENERATOR_BOX;
 const SELECTION = new Selection();
-var lastCard = {x: 0, y:0};
 
 var screenWidth;
 var screenHeight;
@@ -60,8 +60,8 @@ function bound(value, min, max) {
 	return Math.min(Math.max(value, min), max);
 }
 
-function snap(value, min, max, gridSize) {
-	return Math.round(bound(value, min, max) / gridSize) * gridSize;
+function snap(value, min, max) {
+	return Math.round(bound(value, min, max) / GRID_SIZE) * GRID_SIZE;
 }
 
 function shortcut(e) {
@@ -69,14 +69,12 @@ function shortcut(e) {
 		case 'g':
 			toggleGrid();
 			break;
-		case 'b':
+		case 'Backspace':
 			putOnBottom();
 			break;
 		case 'r':
 			replace();
 			break;
-		case 'n':
-			getNext();
 		case 'z':
 			if (grabbed != null) grabbed.sendToBack();
 			break;
@@ -108,6 +106,7 @@ function putOnBottom() {
 		for (let card of selected) {
 			deck.putOnBottom(card);
 		}
+		selected.clear();
 	}
 	if (grabbed != null) {
 		deck.putOnBottom(grabbed);
@@ -127,10 +126,6 @@ function replace() {
 	}
 }
 
-function getNext() {
-	deck.place();
-}
-
 function drawCard(e) {
 	if (grabbed) grabbed.stop();
 	deck.draw(e);
@@ -138,8 +133,8 @@ function drawCard(e) {
 
 function startSelectorBox(e) {
 	deselectAll();
-	selectorBox.start(e);
-	grabbed = selectorBox;
+	grabbed = e.shiftKey ? GENERATOR_BOX : SELECTOR_BOX;
+	grabbed.start(e);
 }
 
 function deselectAll() {
@@ -165,7 +160,6 @@ function start() {
 		}
 	}
 	shuffle(ownedCards);
-	ownedCards.sort((a, b) => a.types.length - b.types.length);
 	saveSession();
 	document.getElementById('modal').classList.add('hide');
 	deck = new Deck(ownedCards);
@@ -182,7 +176,9 @@ window.onload = function() {
 	updateStartButton();
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');
-	selectorBox = new SelectorBox(document.getElementById('selector-box'));
+	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
+	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
+	document.getElementById('start-button').click();
 }
 
 window.onmouseup = release;
