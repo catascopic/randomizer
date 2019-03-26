@@ -29,6 +29,10 @@ var ownedPromos = new Set();
 
 function grab(e, target) {
 	e.stopPropagation();
+	if (e.ctrlKey) {
+		startSelectorBox(e);
+		return;
+	}
 	target.start(e);
 	grabbed = target;
 	measureScreen();
@@ -77,6 +81,20 @@ function shortcut(e) {
 			break;
 		case 'z':
 			if (grabbed != null) grabbed.sendToBack();
+			break;
+		case 'n':
+			let data = deck.contents.pop();
+			let name = document.getElementById('text-box-name');
+			name.innerText = data.name;
+			name.className = 'text-box-name';
+			name.classList.add(...data.types.map(x => x.toLowerCase()));
+			document.getElementById('text-box-text').innerHTML = data.text
+					.replace('\n---\n', '<hr>')
+					.replace(/\{\$(\d*)\}/g, '<span class="coins">$1</span>');
+			let types = document.getElementById('text-box-types');
+			types.innerText = data.types.join('-');;
+			types.className = 'text-box-types';
+			types.classList.add(...data.types.map(x => x.toLowerCase()));
 			break;
 		case 'm':
 		case 's':
@@ -127,7 +145,9 @@ function replace() {
 }
 
 function drawCard(e) {
-	if (grabbed) grabbed.stop();
+	if (grabbed) {
+		grabbed.stop();
+	}
 	deck.draw(e);
 }
 
@@ -160,6 +180,7 @@ function start() {
 		}
 	}
 	shuffle(ownedCards);
+	// ownedCards.sort((a, b) => a.text.length - b.text.length);
 	saveSession();
 	document.getElementById('modal').classList.add('hide');
 	deck = new Deck(ownedCards);
@@ -178,7 +199,7 @@ window.onload = function() {
 	createSelectors(2, ownedPromos, promos, 'promo');
 	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
 	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
-	document.getElementById('start-button').click();
+	// document.getElementById('start-button').click();
 }
 
 window.onmouseup = release;
