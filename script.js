@@ -152,7 +152,9 @@ function drawCard(e) {
 }
 
 function startSelectorBox(e) {
-	deselectAll();
+	if (e.shiftKey || !e.ctrlKey) {
+		deselectAll();
+	}
 	grabbed = e.shiftKey ? GENERATOR_BOX : SELECTOR_BOX;
 	grabbed.start(e);
 }

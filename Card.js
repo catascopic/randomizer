@@ -6,7 +6,6 @@ class Card extends Draggable {
 		this.y = 0;
 		this.data = data;
 		this.node = node;
-		this.isHighlighted = false;
 	}
 
 	start(e) {
@@ -79,7 +78,10 @@ function createCard(data) {
 		if (selected.has(card)) {
 			grab(e, SELECTION);
 		} else {
-			deselectAll();
+			// TODO: make this better
+			if (!e.ctrlKey) {
+				deselectAll();
+			}
 			grab(e, card);
 		}
 	};

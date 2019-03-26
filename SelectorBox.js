@@ -16,7 +16,7 @@ class SelectorBox extends Draggable {
 	move(e) {
 		this.setPosition(e.clientX, e.clientY);
 	}
-	
+
 	setPosition(x, y) {
 		this.x = x;
 		this.y = y;
@@ -30,7 +30,7 @@ class SelectorBox extends Draggable {
 		let boxWidth = Math.abs(this.x - this.startX);
 		let boxHeight = Math.abs(this.y - this.startY);
 		for (let card of revealed) {
-			card.highlight(overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight));
+			card.highlight(selected.has(card) || overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight));
 		}
 	}
 

@@ -12,9 +12,9 @@ class Deck {
 	}
 
 	draw(e) {
+		deselectAll();
 		if (this.contents.length) {
 			let card = createCard(this.contents.pop());
-			deselectAll();
 			grab(e, card);
 			this.updateDeck();
 		}
