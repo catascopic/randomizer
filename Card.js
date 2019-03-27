@@ -6,6 +6,7 @@ class Card extends Draggable {
 		this.y = 0;
 		this.data = data;
 		this.node = node;
+		this.isHighlighted = false;
 	}
 
 	start(e) {
@@ -75,13 +76,16 @@ function createCard(data) {
 	let card = new Card(data, node);
 	node.style.zIndex = zIndex++;
 	node.onmousedown = function(e) {
+		if (e.shiftKey) {
+			console.log(data.name);
+			console.log(data.text);
+			console.log(data.types.join('-'));
+			console.log();
+		}
 		if (selected.has(card)) {
 			grab(e, SELECTION);
 		} else {
-			// TODO: make this better
-			if (!e.ctrlKey) {
-				deselectAll();
-			}
+			deselectAll();
 			grab(e, card);
 		}
 	};
