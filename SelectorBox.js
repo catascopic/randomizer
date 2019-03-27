@@ -7,7 +7,7 @@ class SelectorBox extends Draggable {
 
 	start(e) {
 		this.node.classList.remove('hide');
-		this.node.style.zIndex = zIndex;
+		this.node.style.zIndex = topZIndex;
 		this.startX = e.clientX;
 		this.startY = e.clientY;
 		this.setPosition(this.startX, this.startY);
@@ -30,7 +30,7 @@ class SelectorBox extends Draggable {
 		let boxWidth = Math.abs(this.x - this.startX);
 		let boxHeight = Math.abs(this.y - this.startY);
 		for (let card of revealed) {
-			card.highlight(selected.has(card) || overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight));
+			card.highlight(selected.has(card) || card.overlaps(boxX, boxY, boxWidth, boxHeight));
 		}
 	}
 
@@ -41,19 +41,10 @@ class SelectorBox extends Draggable {
 		let boxWidth = Math.abs(this.x - this.startX);
 		let boxHeight = Math.abs(this.y - this.startY);
 		for (let card of revealed) {
-			if (overlap(card.x, card.y, boxX, boxY, boxWidth, boxHeight)) {
+			if (card.overlaps(boxX, boxY, boxWidth, boxHeight)) {
 				selected.add(card);
 			}
 		}
 	}
 
-}
-
-function overlap(cardX, cardY, boxX, boxY, boxWidth, boxHeight) {
-	return (between(cardX, boxX, boxX + boxWidth)  || between(boxX, cardX, cardX + CARD_WIDTH))
-		&& (between(cardY, boxY, boxY + boxHeight) || between(boxY, cardY, cardY + CARD_HEIGHT));
-}
-
-function between(value, min, max) {
-	return value >= min && value < max;
 }

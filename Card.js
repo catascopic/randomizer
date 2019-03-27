@@ -1,80 +1,113 @@
-class Card extends Draggable {
+function newCard(data) {
+	
+	const node = document.getElementById('card').content.firstElementChild.cloneNode(true);
+	
+	let x = 0;
+	let y = 0;
+	let offsetX;
+	let offsetY;
+	let zIndex = topZIndex++;
+	let highlighted = false;
+	
+	let card = {
 
-	constructor(data, node) {
-		super();
-		this.x = 0;
-		this.y = 0;
-		this.data = data;
-		this.node = node;
-		this.isHighlighted = false;
+		start: function(e) {
+			offsetX = e.clientX - x;
+			offsetY = e.clientY - y;
+			this.toTop();
+		},
+
+		move: function(e) {
+			this.setPosition(e.clientX - offsetX, e.clientY - offsetY);
+		},
+		
+		stop: function () {},
+		
+		setPosition(setX, setY) {
+			x = bound(setX, 0, screenWidth  - CARD_WIDTH);
+			y = bound(setY, 0, screenHeight - CARD_HEIGHT);
+			display();
+		},
+		
+		hide: function() {
+			node.remove();
+			revealed.delete(this);
+		},
+		
+		snap: function() {
+			x = snapToGrid(x);
+			y = snapToGrid(y);
+			display();
+		},
+	
+		toTop: function() {
+			zIndex = topZIndex++;
+			node.style.zIndex = zIndex;
+		},
+
+		sendToBack: function() {
+			for (let card of revealed) {
+				card.moveUp();
+			}
+			topZIndex++;
+			node.style.zIndex = 0;
+		},
+
+		bump: function() {
+			zIndex++;
+			node.style.zIndex = zIndex;
+		},
+
+		highlight: function(setHighlighted) {
+			highlighted = setHighlighted;
+			node.classList.toggle('card-selected', highlighted == undefined || highlighted);
+		},
+
+		replaceWith: function(card) {
+			card.replace({x: x, y: y, offsetX: offsetX, offsetY: offsetY, zIndex: zIndex, highlighted: highlighted});
+			if (selected.delete(this)) {
+				selected.add(card);
+			}
+		},
+		
+		replace: function(copy) {
+			x = copy.x;
+			y = copy.y;
+			offsetX = copy.offsetX;
+			offsetY = copy.offsetY;
+			zIndex = copy.zIndex;
+			node.style.zIndex = zIndex;
+			this.highlight(copy.highlighted);
+			display();
+		},
+		
+		overlaps(boxX, boxY, boxWidth, boxHeight) {
+			return (between(x, boxX, boxX + boxWidth)  || between(boxX, x, x + CARD_WIDTH))
+				&& (between(y, boxY, boxY + boxHeight) || between(boxY, y, y + CARD_HEIGHT));
+		}
+	};
+	
+	// "private" functions
+	
+	function display() {
+		node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
 	}
 
-	start(e) {
-		this.offsetX = e.clientX - this.x;
-		this.offsetY = e.clientY - this.y;
-		this.toTop();
+	function getImageFile(name) {
+		return name.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
 	}
 
-	move(e) {
-		this.setPosition(e.clientX - this.offsetX, e.clientY - this.offsetY);
+	function bound(value, min, max) {
+		return gridFunc(Math.min(Math.max(value, min), max));
 	}
 
-	setPosition(x, y) {
-		this.x = boundFunc(x, 0, screenWidth  - CARD_WIDTH);
-		this.y = boundFunc(y, 0, screenHeight - CARD_HEIGHT);
-		this.node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
-	}
-
-	snap() {
-		this.x = Math.round(this.x / GRID_SIZE) * GRID_SIZE;
-		this.y = Math.round(this.y / GRID_SIZE) * GRID_SIZE;
-		this.node.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px)';
-	}
-
-	hide() {
-		this.node.remove();
-		revealed.delete(this);
+	function between(value, min, max) {
+		return value >= min && value < max;
 	}
 	
-	toTop() {
-		this.node.style.zIndex = zIndex++;
-	}
-
-	sendToBack() {
-		for (let card of revealed) {
-			card.moveUp();
-		}
-		zIndex++;
-		this.node.style.zIndex = 0;
-	}
-
-	moveUp() {
-		this.node.style.zIndex++;
-	}
-
-	highlight(isHighlighted) {
-		this.node.classList.toggle('card-selected', isHighlighted == undefined || isHighlighted);
-	}
-
-	replace(card) {
-		this.x = card.x;
-		this.y = card.y;
-		this.offsetX = card.offsetX;
-		this.offsetY = card.offsetY;
-		this.node.style.zIndex = card.node.style.zIndex;
-		this.highlight(card.node.classList.contains('card-selected'));
-		if (selected.delete(card)) {
-			selected.add(this);
-		}
-		this.node.style.transform = card.node.style.transform;
-	}
-
-}
-
-function createCard(data) {
-	let node = document.getElementById('card').content.firstElementChild.cloneNode(true);
-	let card = new Card(data, node);
-	node.style.zIndex = zIndex++;
+	// setup HTML
+	
+	node.style.zIndex = topZIndex++;
 	node.onmousedown = function(e) {
 		if (e.shiftKey) {
 			console.log(data.name);
@@ -92,16 +125,16 @@ function createCard(data) {
 	for (let type of data.types) {
 		node.classList.add(type.toLowerCase());
 	}
-
+	
+	// TODO: allow reinitialization with new data
+	
 	node.getElementsByClassName('title')[0].innerText = data.name;
 	node.getElementsByTagName('img')[0].src = 'art/' + getImageFile(data.name) + '.png';
 	node.getElementsByClassName('cost')[0].innerText = data.cost;
-
 	document.body.appendChild(node);
+	
 	revealed.add(card);
+	
 	return card;
 }
 
-function getImageFile(name) {
-	return name.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
-}

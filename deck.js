@@ -14,7 +14,7 @@ class Deck {
 	draw(e) {
 		deselectAll();
 		if (this.contents.length) {
-			let card = createCard(this.contents.pop());
+			let card = newCard(this.contents.pop());
 			grab(e, card);
 			this.updateDeck();
 		}
@@ -30,17 +30,17 @@ class Deck {
 	replace(card) {
 		card.hide();
 		this.contents.unshift(card.data);
-		let newCard = createCard(this.contents.pop());
-		newCard.replace(card);
-		return newCard;
+		let replacement = newCard(this.contents.pop());
+		card.replaceWith(replacement);
+		return replacement;
 	}
 	
 	place(x, y) {
 		if (this.contents.length) {
-			let newCard = createCard(this.contents.pop());
+			let card = newCard(this.contents.pop());
 			this.updateDeck();
-			newCard.setPosition(x, y);
-			return newCard;
+			card.setPosition(x, y);
+			return card;
 		}
 		return null;
 	}

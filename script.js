@@ -10,14 +10,14 @@ const SELECTION = new Selection();
 
 var screenWidth;
 var screenHeight;
-var zIndex = 0;
+var topZIndex = 0;
 
 const CARD_WIDTH = 120;
 const CARD_HEIGHT = CARD_WIDTH;
 const GRID_SIZE = 20;
 
 var gridMode = false;
-var boundFunc = bound;
+var gridFunc = noGrid;
 
 // selector vars
 var sets;
@@ -27,12 +27,16 @@ var ownedCards;
 var ownedSets = new Set();
 var ownedPromos = new Set();
 
+function noGrid(n) {
+	return n;
+}
+
+function snapToGrid(n) {
+	return nearestMultiple(n, GRID_SIZE);
+}
+
 function grab(e, target) {
 	e.stopPropagation();
-	if (e.ctrlKey) {
-		startSelectorBox(e);
-		return;
-	}
 	target.start(e);
 	grabbed = target;
 	measureScreen();
@@ -49,7 +53,7 @@ function measureScreen() {
 
 function release(e) {
 	if (grabbed != null) {
-		grabbed.stop();
+		grabbed.stop(e);
 		grabbed = null;
 	}
 }
@@ -58,14 +62,6 @@ function move(e) {
 	if (grabbed) {
 		grabbed.move(e);
 	}
-}
-
-function bound(value, min, max) {
-	return Math.min(Math.max(value, min), max);
-}
-
-function snap(value, min, max) {
-	return Math.round(bound(value, min, max) / GRID_SIZE) * GRID_SIZE;
 }
 
 function shortcut(e) {
@@ -81,6 +77,9 @@ function shortcut(e) {
 			break;
 		case 'z':
 			if (grabbed != null) grabbed.sendToBack();
+			break;
+		case 'a':
+			selectAll();
 			break;
 		case 'n':
 			let data = deck.contents.pop();
@@ -110,12 +109,12 @@ function toggleGrid() {
 	gridMode ^= true;
 	document.body.classList.toggle('grid', gridMode);
 	if (gridMode) {
-		boundFunc = snap;
+		gridFunc = snapToGrid;
 		for (let card of revealed) {
 			card.snap();
 		}
 	} else {
-		boundFunc = bound;
+		gridFunc = noGrid;
 	}
 }
 
@@ -144,6 +143,10 @@ function replace() {
 	}
 }
 
+function selectAll() {
+	
+}
+
 function drawCard(e) {
 	if (grabbed) {
 		grabbed.stop();
@@ -152,9 +155,7 @@ function drawCard(e) {
 }
 
 function startSelectorBox(e) {
-	if (e.shiftKey || !e.ctrlKey) {
-		deselectAll();
-	}
+	deselectAll();
 	grabbed = e.shiftKey ? GENERATOR_BOX : SELECTOR_BOX;
 	grabbed.start(e);
 }
@@ -200,7 +201,7 @@ window.onload = function() {
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');
 	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
-	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
+	GENERATOR_BOX = newGeneratorBox(document.getElementById('generator-box'));
 	// document.getElementById('start-button').click();
 }
 

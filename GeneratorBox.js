@@ -1,51 +1,53 @@
-class GeneratorBox extends Draggable {
+function newGeneratorBox(node) {
 
-	constructor(node) {
-		super();
-		this.node = node;
+	let anchorX;
+	let anchorY;
+	let countAcross;
+	let countDown;
+
+	let box = {
+		
+		start: function(e) {
+			measureScreen();
+			node.classList.remove('hide');
+			node.style.zIndex = topZIndex;
+			anchorX = e.clientX;
+			anchorY = e.clientY;
+			this.move(e);
+		},
+		
+		move: function(e) {
+			setPosition(e.clientX, e.clientY);
+		},
+	
+		stop: function(e) {
+			node.classList.add('hide');
+			let x = Math.min(e.clientX, anchorX);
+			let y = Math.min(e.clientY, anchorY);
+			let total = countAcross * countDown;
+			for (let i = 0; i < total; i++) {
+				deck.place(x + Math.floor(i / countDown) * CARD_HEIGHT, y + (i % countDown) * CARD_WIDTH);
+			}
+		}
+	};
+	
+	function getCount(pos, start, dim) {
+		return Math.max(Math.ceil(Math.abs(pos - start) / dim), 1);
 	}
 
-	start(e) {
-		this.node.classList.remove('hide');
-		this.node.style.zIndex = zIndex;
-		this.startX = e.clientX;
-		this.startY = e.clientY;
-		this.setPosition(this.startX + CARD_WIDTH, this.startY + CARD_HEIGHT);
-	}
-
-	move(e) {
-		this.setPosition(e.clientX, e.clientY);
+	function setPosition(x, y) {
+		countAcross = getCount(x, anchorX, CARD_WIDTH);
+		countDown = getCount(y, anchorY, CARD_HEIGHT);
+		
+		node.style.width = countAcross * CARD_WIDTH + 'px';
+		node.style.height = countDown * CARD_HEIGHT + 'px';
+		
+		node.style.transform = 'translate('
+				+ gridFunc(Math.min(x, anchorX)) + 'px, '
+				+ gridFunc(Math.min(y, anchorY)) + 'px)';
+		let count = countAcross * countDown;
+		node.innerText = count;
 	}
 	
-	setPosition(x, y) {
-		this.x = x;
-		this.y = y;
-		
-		this.countAcross = getCount(this.x, this.startX, CARD_WIDTH);
-		this.countDown = getCount(this.y, this.startY, CARD_HEIGHT);
-		
-		this.node.style.width = this.countAcross * CARD_WIDTH + 'px';
-		this.node.style.height = this.countDown * CARD_HEIGHT + 'px';
-		
-		this.node.style.transform = 'translate('
-				+ Math.min(this.x, this.startX) + 'px, '
-				+ Math.min(this.y, this.startY) + 'px)';
-		let count = this.countAcross * this.countDown;
-		this.node.innerText = count;
-	}
-
-	stop() {
-		this.node.classList.add('hide');
-		let x = Math.min(this.x, this.startX);
-		let y = Math.min(this.y, this.startY);
-		let total = this.countAcross * this.countDown;
-		for (let i = 0; i < total; i++) {
-			deck.place(x + Math.floor(i / this.countDown) * CARD_HEIGHT, y + (i % this.countDown) * CARD_WIDTH);
-		}
-	}
-
-}
-
-function getCount(pos, start, dim) {
-	return Math.max(Math.ceil(Math.abs(pos - start) / dim), 1);
+	return box;
 }
