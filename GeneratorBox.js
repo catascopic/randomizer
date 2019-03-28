@@ -21,10 +21,11 @@ function newGeneratorBox(node) {
 		},
 		
 		move: function(e) {
-			let x = bound(e.clientX, 0, screenWidth  - CARD_WIDTH);
-			let y = bound(e.clientY, 0, screenHeight - CARD_HEIGHT);
-			countAcross = getCount(x, anchorX, CARD_WIDTH);
-			countDown = getCount(y, anchorY, CARD_HEIGHT);
+			let x = bound(e.clientX, 0, screenWidth  - CARD_WIDTH + 1);
+			let y = bound(e.clientY, 0, screenHeight - CARD_HEIGHT + 1);
+			
+			countAcross = getCount(x, gridFunc(anchorX), CARD_WIDTH);
+			countDown = getCount(y, gridFunc(anchorY), CARD_HEIGHT);
 
 			node.style.width = countAcross * CARD_WIDTH + 'px';
 			node.style.height = countDown * CARD_HEIGHT + 'px';
