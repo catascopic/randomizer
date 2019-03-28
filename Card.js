@@ -1,7 +1,7 @@
 function newCard(initData) {
 	
 	const node = cloneCard(initData);
-	let data;
+	let data = initData;
 	
 	let x = 0;
 	let y = 0;
@@ -67,8 +67,9 @@ function newCard(initData) {
 		
 		replace: function(newData) {
 			let oldData = data;
+			data = newData;
 			node.classList.remove(...CARD_TYPES.map(t => t.toLowerCase()));
-			initializeCard(node, newData);
+			initializeCard(node, data);
 			return oldData;
 		},
 		
