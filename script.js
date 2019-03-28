@@ -6,6 +6,7 @@ var selected = new Set();
 var deck;
 var SELECTOR_BOX;
 var GENERATOR_BOX;
+var SEARCH_DIALOG;
 const SELECTION = newSelection();
 
 var screenWidth;
@@ -33,6 +34,10 @@ function noGrid(n) {
 
 function snapToGrid(n) {
 	return nearestMultiple(n, GRID_SIZE);
+}
+
+function bound(value, min, max) {
+	return Math.min(Math.max(value, min), max);
 }
 
 function grab(e, target) {
@@ -81,6 +86,9 @@ function shortcut(e) {
 		case 'a':
 			selectAll();
 			break;
+		case 's':
+			SEARCH_DIALOG.open();
+			break;
 		case 'n':
 			let data = deck.contents.pop();
 			let name = document.getElementById('text-box-name');
@@ -116,6 +124,7 @@ function toggleGrid() {
 	} else {
 		gridFunc = noGrid;
 	}
+	measureScreen();
 }
 
 function putOnBottom() {
@@ -208,6 +217,7 @@ window.onload = function() {
 	createSelectors(2, ownedPromos, promos, 'promo');
 	SELECTOR_BOX = newSelectorBox(document.getElementById('selector-box'));
 	GENERATOR_BOX = newGeneratorBox(document.getElementById('generator-box'));
+	SEARCH_DIALOG = newSearchDialog();
 	// document.getElementById('start-button').click();
 }
 
@@ -260,3 +270,5 @@ function saveSession() {
 		ownedPromos: Array.from(ownedPromos)
 	}));
 }
+
+const CARD_TYPES = ["Action", "Treasure", "Victory", "Attack", "Duration", "Reaction", "Looter", "Knight", "Reserve", "Traveller", "Gathering", "Castle", "Night", "Fate", "Doom"];

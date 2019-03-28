@@ -1,6 +1,6 @@
 function newCard(initData) {
 	
-	const node = document.getElementById('card').content.firstElementChild.cloneNode(true);
+	const node = cloneCard(initData);
 	let data;
 	
 	let x = 0;
@@ -25,8 +25,8 @@ function newCard(initData) {
 		stop: function () {},
 		
 		setPosition(setX, setY) {
-			x = bound(setX, 0, screenWidth  - CARD_WIDTH);
-			y = bound(setY, 0, screenHeight - CARD_HEIGHT);
+			x = gridFunc(bound(setX, 0, screenWidth  - CARD_WIDTH));
+			y = gridFunc(bound(setY, 0, screenHeight - CARD_HEIGHT));
 			display();
 		},
 		
@@ -67,7 +67,8 @@ function newCard(initData) {
 		
 		replace: function(newData) {
 			let oldData = data;
-			initialize(newData);
+			node.classList.remove(...CARD_TYPES.map(t => t.toLowerCase()));
+			initializeCard(node, newData);
 			return oldData;
 		},
 		
@@ -84,29 +85,11 @@ function newCard(initData) {
 	}
 
 	function getImageFile(name) {
-		return name.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
-	}
-
-	function bound(value, min, max) {
-		return gridFunc(Math.min(Math.max(value, min), max));
+		return ;
 	}
 
 	function between(value, min, max) {
 		return value >= min && value < max;
-	}
-	
-	// setup HTML
-	
-	function initialize(setData) {
-		data = setData;
-		node.className = 'card';
-		node.classList.toggle('card-selected', highlighted);
-		for (let type of data.types) {
-			node.classList.add(type.toLowerCase());
-		}
-		node.getElementsByClassName('title')[0].innerText = data.name;
-		node.getElementsByTagName('img')[0].src = 'art/' + getImageFile(data.name) + '.png';
-		node.getElementsByClassName('cost')[0].innerText = data.cost;
 	}
 	
 	node.style.zIndex = topZIndex++;
@@ -124,9 +107,21 @@ function newCard(initData) {
 			grab(e, card);
 		}
 	};	
-	initialize(initData);
 	document.body.appendChild(node);
 	revealed.add(card);
 	return card;
 }
 
+function cloneCard(data) {
+	let node = document.getElementById('card').content.firstElementChild.cloneNode(true);
+	initializeCard(node, data);
+	return node;
+}
+
+function initializeCard(node, data) {
+	node.classList.add(...data.types.map(t => t.toLowerCase()));
+	node.getElementsByClassName('title')[0].innerText = data.name;
+	let imageFile = data.name.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
+	node.getElementsByTagName('img')[0].src = 'art/' + imageFile + '.png';
+	node.getElementsByClassName('cost')[0].innerText = data.cost;
+}

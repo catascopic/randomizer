@@ -4,8 +4,12 @@ function newGeneratorBox(node) {
 	let anchorY;
 	let countAcross;
 	let countDown;
+	
+	function getCount(pos, start, dim) {
+		return Math.max(Math.ceil(Math.abs(pos - start) / dim), 1);
+	}
 
-	let box = {
+	return {
 		
 		start: function(e) {
 			measureScreen();
@@ -17,35 +21,25 @@ function newGeneratorBox(node) {
 		},
 		
 		move: function(e) {
-			setPosition(e.clientX, e.clientY);
+			let x = bound(e.clientX, 0, screenWidth  - CARD_WIDTH);
+			let y = bound(e.clientY, 0, screenHeight - CARD_HEIGHT);
+			countAcross = getCount(x, anchorX, CARD_WIDTH);
+			countDown = getCount(y, anchorY, CARD_HEIGHT);
+
+			node.style.width = countAcross * CARD_WIDTH + 'px';
+			node.style.height = countDown * CARD_HEIGHT + 'px';
+			node.style.transform = 'translate('
+					+ gridFunc(Math.min(x, anchorX)) + 'px, '
+					+ gridFunc(Math.min(y, anchorY)) + 'px)';
+			node.innerText = countAcross * countDown;
 		},
 	
 		stop: function(e) {
 			node.classList.add('hide');
-			let x = Math.min(e.clientX, anchorX);
-			let y = Math.min(e.clientY, anchorY);
-			let total = countAcross * countDown;
-			deck.placeGroup(x, y, countDown, total, true);
+			deck.placeGroup(
+					Math.min(bound(e.clientX, 0, screenWidth  - CARD_WIDTH),  anchorX), 
+					Math.min(bound(e.clientY, 0, screenHeight - CARD_HEIGHT), anchorY), 
+					countDown, countAcross * countDown, true);
 		}
 	};
-	
-	function getCount(pos, start, dim) {
-		return Math.max(Math.ceil(Math.abs(pos - start) / dim), 1);
-	}
-
-	function setPosition(x, y) {
-		countAcross = getCount(x, anchorX, CARD_WIDTH);
-		countDown = getCount(y, anchorY, CARD_HEIGHT);
-		
-		node.style.width = countAcross * CARD_WIDTH + 'px';
-		node.style.height = countDown * CARD_HEIGHT + 'px';
-		
-		node.style.transform = 'translate('
-				+ gridFunc(Math.min(x, anchorX)) + 'px, '
-				+ gridFunc(Math.min(y, anchorY)) + 'px)';
-		let count = countAcross * countDown;
-		node.innerText = count;
-	}
-	
-	return box;
 }

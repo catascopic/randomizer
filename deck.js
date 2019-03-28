@@ -55,13 +55,21 @@ function newDeck(contents) {
 			});
 		},
 		
+		getContents: function() {
+			return contents.slice();
+		},
+		
+		drawSearch: function(result) {
+			grab(result.e, newCard(contents.splice(contents.findIndex(c => c.name == result.name), 1)[0]));
+			updateTotal();
+		},
+		
 		cheat: function(cardName) {
 			let index = contents.findIndex(c => c.name == cardName);
 			if (index == -1) {
 				throw 'not found';
 			}
 			swap(contents, index, contents.length - 1);
-			return 'swapped at position ' + index;
 		}
 	};
 }
