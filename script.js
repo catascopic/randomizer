@@ -204,9 +204,21 @@ function start() {
 	deck = newDeck(ownedCards);
 }
 
+var Card = {};
+
 function init(json) {
 	sets = json.sets;
 	promos = json.promos;
+	
+	// stupid code
+	for (let set of sets) {
+		for (let card of set.cards) {
+			Card[card.name.toLowerCase().replace(' ', '')] = card.name;
+		}
+	}
+	for (let card of promos) {
+		Card[card.name.toLowerCase().replace(' ', '')] = card.name;
+	}
 }
 
 window.onload = function() {

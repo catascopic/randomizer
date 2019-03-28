@@ -85,10 +85,6 @@ function newCard(initData) {
 		node.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
 	}
 
-	function getImageFile(name) {
-		return ;
-	}
-
 	function between(value, min, max) {
 		return value >= min && value < max;
 	}
