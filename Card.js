@@ -1,6 +1,7 @@
-function newCard(data) {
+function newCard(initData) {
 	
 	const node = document.getElementById('card').content.firstElementChild.cloneNode(true);
+	let data;
 	
 	let x = 0;
 	let y = 0;
@@ -32,6 +33,7 @@ function newCard(data) {
 		hide: function() {
 			node.remove();
 			revealed.delete(this);
+			return data;
 		},
 		
 		snap: function() {
@@ -47,7 +49,7 @@ function newCard(data) {
 
 		sendToBack: function() {
 			for (let card of revealed) {
-				card.moveUp();
+				card.bump();
 			}
 			topZIndex++;
 			node.style.zIndex = 0;
@@ -62,23 +64,11 @@ function newCard(data) {
 			highlighted = setHighlighted;
 			node.classList.toggle('card-selected', highlighted == undefined || highlighted);
 		},
-
-		replaceWith: function(card) {
-			card.replace({x: x, y: y, offsetX: offsetX, offsetY: offsetY, zIndex: zIndex, highlighted: highlighted});
-			if (selected.delete(this)) {
-				selected.add(card);
-			}
-		},
 		
-		replace: function(copy) {
-			x = copy.x;
-			y = copy.y;
-			offsetX = copy.offsetX;
-			offsetY = copy.offsetY;
-			zIndex = copy.zIndex;
-			node.style.zIndex = zIndex;
-			this.highlight(copy.highlighted);
-			display();
+		replace: function(newData) {
+			let oldData = data;
+			initialize(newData);
+			return oldData;
 		},
 		
 		overlaps(boxX, boxY, boxWidth, boxHeight) {
@@ -107,6 +97,18 @@ function newCard(data) {
 	
 	// setup HTML
 	
+	function initialize(setData) {
+		data = setData;
+		node.className = 'card';
+		node.classList.toggle('card-selected', highlighted);
+		for (let type of data.types) {
+			node.classList.add(type.toLowerCase());
+		}
+		node.getElementsByClassName('title')[0].innerText = data.name;
+		node.getElementsByTagName('img')[0].src = 'art/' + getImageFile(data.name) + '.png';
+		node.getElementsByClassName('cost')[0].innerText = data.cost;
+	}
+	
 	node.style.zIndex = topZIndex++;
 	node.onmousedown = function(e) {
 		if (e.shiftKey) {
@@ -121,20 +123,10 @@ function newCard(data) {
 			deselectAll();
 			grab(e, card);
 		}
-	};
-	for (let type of data.types) {
-		node.classList.add(type.toLowerCase());
-	}
-	
-	// TODO: allow reinitialization with new data
-	
-	node.getElementsByClassName('title')[0].innerText = data.name;
-	node.getElementsByTagName('img')[0].src = 'art/' + getImageFile(data.name) + '.png';
-	node.getElementsByClassName('cost')[0].innerText = data.cost;
+	};	
+	initialize(initData);
 	document.body.appendChild(node);
-	
 	revealed.add(card);
-	
 	return card;
 }
 

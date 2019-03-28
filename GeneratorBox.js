@@ -25,9 +25,7 @@ function newGeneratorBox(node) {
 			let x = Math.min(e.clientX, anchorX);
 			let y = Math.min(e.clientY, anchorY);
 			let total = countAcross * countDown;
-			for (let i = 0; i < total; i++) {
-				deck.place(x + Math.floor(i / countDown) * CARD_HEIGHT, y + (i % countDown) * CARD_WIDTH);
-			}
+			deck.placeGroup(x, y, countDown, total, true);
 		}
 	};
 	

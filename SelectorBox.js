@@ -1,50 +1,49 @@
-class SelectorBox extends Draggable {
+function newSelectorBox(node) {
+	
+	let startX;
+	let startY;
+	
+	return {
+		
+		start: function(e) {
+			node.classList.remove('hide');
+			node.style.zIndex = topZIndex;
+			startX = e.clientX;
+			startY = e.clientY;
+			this.setPosition(startX, startY);
+		},
 
-	constructor(node) {
-		super();
-		this.node = node;
-	}
+		move: function(e) {
+			this.setPosition(e.clientX, e.clientY);
+		},
 
-	start(e) {
-		this.node.classList.remove('hide');
-		this.node.style.zIndex = topZIndex;
-		this.startX = e.clientX;
-		this.startY = e.clientY;
-		this.setPosition(this.startX, this.startY);
-	}
+		setPosition: function(x, y) {
+			node.style.transform = 'translate('
+					+ Math.min(x, startX) + 'px, '
+					+ Math.min(y, startY) + 'px)';
+			node.style.width = Math.abs(x - startX) + 'px';
+			node.style.height = Math.abs(y - startY) + 'px';
+			let boxX = Math.min(x, startX);
+			let boxY = Math.min(y, startY);
+			let boxWidth = Math.abs(x - startX);
+			let boxHeight = Math.abs(y - startY);
+			for (let card of revealed) {
+				card.highlight(selected.has(card) || card.overlaps(boxX, boxY, boxWidth, boxHeight));
+			}
+		},
 
-	move(e) {
-		this.setPosition(e.clientX, e.clientY);
-	}
-
-	setPosition(x, y) {
-		this.x = x;
-		this.y = y;
-		this.node.style.transform = 'translate('
-				+ Math.min(x, this.startX) + 'px, '
-				+ Math.min(y, this.startY) + 'px)';
-		this.node.style.width = Math.abs(x - this.startX) + 'px';
-		this.node.style.height = Math.abs(y - this.startY) + 'px';
-		let boxX = Math.min(this.x, this.startX);
-		let boxY = Math.min(this.y, this.startY);
-		let boxWidth = Math.abs(this.x - this.startX);
-		let boxHeight = Math.abs(this.y - this.startY);
-		for (let card of revealed) {
-			card.highlight(selected.has(card) || card.overlaps(boxX, boxY, boxWidth, boxHeight));
-		}
-	}
-
-	stop() {
-		this.node.classList.add('hide');
-		let boxX = Math.min(this.x, this.startX);
-		let boxY = Math.min(this.y, this.startY);
-		let boxWidth = Math.abs(this.x - this.startX);
-		let boxHeight = Math.abs(this.y - this.startY);
-		for (let card of revealed) {
-			if (card.overlaps(boxX, boxY, boxWidth, boxHeight)) {
-				selected.add(card);
+		stop: function(e) {
+			node.classList.add('hide');
+			let boxX = Math.min(e.clientX, startX);
+			let boxY = Math.min(e.clientY, startY);
+			let boxWidth = Math.abs(e.clientX - startX);
+			let boxHeight = Math.abs(e.clientY - startY);
+			for (let card of revealed) {
+				if (card.overlaps(boxX, boxY, boxWidth, boxHeight)) {
+					selected.add(card);
+				}
 			}
 		}
-	}
+	};
 
 }

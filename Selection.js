@@ -1,21 +1,23 @@
-class Selection extends Draggable {
+function newSelection() {
+	
+	return {
+		start: function(e) {
+			for (let card of selected) {
+				card.start(e);
+			}
+		},
 
-	start(e) {
-		for (let card of selected) {
-			card.start(e);
-		}
-	}
+		move: function(e) {
+			for (let card of selected) {
+				card.move(e);
+			}
+		},
 
-	move(e) {
-		for (let card of selected) {
-			card.move(e);
+		stop: function(e) {
+			for (let card of selected) {
+				card.stop(e);
+			}
 		}
-	}
-
-	stop(e) {
-		for (let card of selected) {
-			card.stop(e);
-		}
-	}
+	};
 
 }

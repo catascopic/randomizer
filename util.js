@@ -1,8 +1,24 @@
-function checkValid(n) {
-	if (n === undefined || n === null || isNaN(n)) {
+function validate(n) {
+	if (n === undefined || n === null || (isNumber(n) && isNaN(n))) {
 		throw 'invalid value: ' + n;
 	}
 	return n;
+}
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function setsEqual(set1, set2) {
+    if (set1.size !== set2.size) {
+		return false;
+	}
+    for (let e of set1) {
+		if (!set2.has(e)) {
+			return false;
+		}
+	}
+    return true;
 }
 
 function nearestMultiple(value, unit) {

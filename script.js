@@ -6,7 +6,7 @@ var selected = new Set();
 var deck;
 var SELECTOR_BOX;
 var GENERATOR_BOX;
-const SELECTION = new Selection();
+const SELECTION = newSelection();
 
 var screenWidth;
 var screenHeight;
@@ -131,7 +131,6 @@ function putOnBottom() {
 }
 
 function replace() {
-	let replaced;
 	if (selected.size) {
 		// copy because we're going to be modifying selected
 		let copy = Array.from(selected);
@@ -139,12 +138,19 @@ function replace() {
 			deck.replace(card);
 		}
 	} else if (grabbed != null) {
-		grabbed = deck.replace(grabbed);
+		deck.replace(grabbed);
 	}
 }
 
 function selectAll() {
-	
+	if (!setsEqual(revealed, selected)) {
+		for (let card of revealed) {
+			selected.add(card);
+			card.highlight();
+		}
+	} else {
+		deselectAll();
+	}
 }
 
 function drawCard(e) {
@@ -186,7 +192,7 @@ function start() {
 	// ownedCards.sort((a, b) => a.text.length - b.text.length);
 	saveSession();
 	document.getElementById('modal').classList.add('hide');
-	deck = new Deck(ownedCards);
+	deck = newDeck(ownedCards);
 }
 
 function init(json) {
@@ -200,7 +206,7 @@ window.onload = function() {
 	updateStartButton();
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');
-	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
+	SELECTOR_BOX = newSelectorBox(document.getElementById('selector-box'));
 	GENERATOR_BOX = newGeneratorBox(document.getElementById('generator-box'));
 	// document.getElementById('start-button').click();
 }
