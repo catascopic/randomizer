@@ -24,6 +24,8 @@ function newCard(initData) {
 		
 		stop: function () {},
 		
+		cancel: function() {},
+		
 		setPosition(setX, setY) {
 			x = gridFunc(bound(setX, 0, screenWidth  - CARD_WIDTH));
 			y = gridFunc(bound(setY, 0, screenHeight - CARD_HEIGHT));

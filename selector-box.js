@@ -43,6 +43,15 @@ function newSelectorBox(node) {
 					selected.add(card);
 				}
 			}
+		},
+		
+		cancel: function() {
+			node.classList.add('hide');
+			// TODO: make better synchronization of selected/highlighted
+			for (let card of revealed) {
+				card.highlight(false);
+			}
+			grabbed = null;
 		}
 	};
 

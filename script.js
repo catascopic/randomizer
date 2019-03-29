@@ -71,45 +71,16 @@ function move(e) {
 
 function shortcut(e) {
 	switch (e.key) {
-		case 'g':
-			toggleGrid();
-			break;
-		case 'Backspace':
-			putOnBottom();
-			break;
-		case 'r':
-			replace();
-			break;
-		case 'z':
-			if (grabbed != null) grabbed.sendToBack();
-			break;
-		case 'a':
-			selectAll();
-			break;
-		case 's':
-			SEARCH_DIALOG.open();
-			break;
-		case 'n':
-			let data = deck.contents.pop();
-			let name = document.getElementById('text-box-name');
-			name.innerText = data.name;
-			name.className = 'text-box-name';
-			name.classList.add(...data.types.map(x => x.toLowerCase()));
-			document.getElementById('text-box-text').innerHTML = data.text
-					.replace('\n---\n', '<hr>')
-					.replace(/\{\$(\d*)\}/g, '<span class="coins">$1</span>');
-			let types = document.getElementById('text-box-types');
-			types.innerText = data.types.join('-');;
-			types.className = 'text-box-types';
-			types.classList.add(...data.types.map(x => x.toLowerCase()));
-			break;
-		case 'm':
-		case 's':
-			deck.shuffle();
-			break;
-		case 'Escape':
-			deselectAll();
-			break;
+		case 'g': toggleGrid();   break;
+		case 'Backspace': putOnBottom(); break;
+		case 'r': replace();      break;
+		case 'z': sendToBack();   break;
+		case 'a': selectAll();    break;
+		case 'o': // TODO: organize(); break;
+		case 'q': // TODO: search();   break;
+		case 'm': 
+		case 's': deck.shuffle(); break;
+		case 'Escape': cancel();  break;
 	}
 }
 
@@ -134,8 +105,15 @@ function putOnBottom() {
 		}
 		selected.clear();
 	}
-	if (grabbed != null) {
+	// TODO: do a better check than this
+	if (grabbed != null && grabbed.replace) {
 		deck.putOnBottom(grabbed);
+	}
+}
+
+function sendToback() {
+	if (grabbed != null) {
+		grabbed.sendToBack();
 	}
 }
 
@@ -146,7 +124,7 @@ function replace() {
 		for (let card of copy) {
 			deck.replace(card);
 		}
-	} else if (grabbed != null) {
+	} else if (grabbed != null && grabbed.replace) {
 		deck.replace(grabbed);
 	}
 }
@@ -180,6 +158,13 @@ function deselectAll() {
 		card.highlight(false);
 	}
 	selected.clear();
+}
+
+function cancel() {
+	if (grabbed != null) {
+		grabbed.cancel();
+	}
+	deselectAll();
 }
 
 function start() {

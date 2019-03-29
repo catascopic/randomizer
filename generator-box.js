@@ -41,6 +41,11 @@ function newGeneratorBox(node) {
 					Math.min(bound(e.clientX, 0, screenWidth  - CARD_WIDTH),  anchorX), 
 					Math.min(bound(e.clientY, 0, screenHeight - CARD_HEIGHT), anchorY), 
 					countDown, countAcross * countDown, true);
+		},
+		
+		cancel: function() {
+			node.classList.add('hide');
+			grabbed = null;
 		}
 	};
 }
