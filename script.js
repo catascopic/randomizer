@@ -72,15 +72,16 @@ function move(e) {
 function shortcut(e) {
 	switch (e.key) {
 		case 'a': selectAll();    break;
+		case 'd': putOnBottom();  break;
 		case 'g': toggleGrid();   break;
-		case 'm': 
 		case 'o': // TODO: organize();     break;
 		case 'q': // TODO: search();       break;
 		case 'r': replace();      break;
-		case 's': deck.shuffle(); break;
+		case 's': 
+		case 'm': deck.shuffle(); break;
 		case 'z': sendToBack();   break;
-		case 'Backspace': putOnBottom(); break;
 		case 'Escape': cancel();  break;
+		case 'Delete': putOnBottom();  break;
 		default: return;
 	}
 	e.preventDefault();
