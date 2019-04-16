@@ -46,6 +46,10 @@ function newGeneratorBox(node) {
 		cancel: function() {
 			node.classList.add('hide');
 			grabbed = null;
-		}
+		},
+		
+		replace: function() {},
+		remove: function() {},
+		sendToBack: function() {},
 	};
 }

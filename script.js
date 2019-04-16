@@ -117,9 +117,17 @@ function removeSelected() {
 	}
 }
 
-function sendToback() {
+function sendToBack() {
 	if (grabbed != null) {
 		grabbed.sendToBack();
+	} else if (selected.size) {
+		sendSelectedToBack();
+	}
+}
+
+function sendSelectedToBack() {
+	for (let card of selected) {
+		card.sendToBack();
 	}
 }
 

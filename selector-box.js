@@ -40,8 +40,8 @@ function newSelectorBox(node) {
 		},
 		
 		replace: function() {},
-		
 		remove: function() {},
+		sendToBack: function() {},
 	};
 
 }

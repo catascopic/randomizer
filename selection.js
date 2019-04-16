@@ -20,8 +20,8 @@ function newSelection() {
 		},
 		
 		replace: replaceSelected,
-		
-		remove: removeSelected
+		remove: removeSelected,
+		sendToBack: function() {}
 	};
 
 }
