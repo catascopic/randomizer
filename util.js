@@ -9,6 +9,14 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function toggle(set, item, state) {
+	if (state) {
+		set.add(item);
+	} else {
+		set.delete(item);
+	}
+}
+
 function setsEqual(set1, set2) {
     if (set1.size !== set2.size) {
 		return false;

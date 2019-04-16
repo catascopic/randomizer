@@ -17,7 +17,11 @@ function newSelection() {
 			for (let card of selected) {
 				card.stop(e);
 			}
-		}
+		},
+		
+		replace: replaceSelected,
+		
+		remove: removeSelected
 	};
 
 }

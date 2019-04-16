@@ -8,10 +8,9 @@ function newCard(initData) {
 	let offsetX;
 	let offsetY;
 	let zIndex = topZIndex++;
-	let highlighted = false;
 	
 	let card = {
-
+		
 		start: function(e) {
 			offsetX = e.clientX - x;
 			offsetY = e.clientY - y;
@@ -30,12 +29,6 @@ function newCard(initData) {
 			x = gridFunc(bound(setX, 0, screenWidth  - CARD_WIDTH));
 			y = gridFunc(bound(setY, 0, screenHeight - CARD_HEIGHT));
 			display();
-		},
-		
-		hide: function() {
-			node.remove();
-			revealed.delete(this);
-			return data;
 		},
 		
 		snap: function() {
@@ -61,26 +54,31 @@ function newCard(initData) {
 			zIndex++;
 			node.style.zIndex = zIndex;
 		},
-
-		highlight: function(setHighlighted) {
-			highlighted = setHighlighted;
-			node.classList.toggle('card-selected', highlighted == undefined || highlighted);
-		},
 		
-		replace: function(newData) {
-			let oldData = data;
-			data = newData;
+		replace: function() {
+			data = deck.replace(data);
 			node.classList.remove(...CARD_TYPES.map(t => t.toLowerCase()));
 			initializeCard(node, data);
-			return oldData;
 		},
 		
-		overlaps(boxX, boxY, boxWidth, boxHeight) {
-			return (between(x, boxX, boxX + boxWidth)  || between(boxX, x, x + CARD_WIDTH))
-				&& (between(y, boxY, boxY + boxHeight) || between(boxY, y, y + CARD_HEIGHT));
+		remove: function() {
+			deck.putOnBottom(data);
+			node.remove();
+			revealed.delete(this);
+			return data;
+		},
+
+		checkOverlap(boxX, boxY, boxWidth, boxHeight) {
+			this.select((between(x, boxX, boxX + boxWidth)  || between(boxX, x, x + CARD_WIDTH))
+					&&  (between(y, boxY, boxY + boxHeight) || between(boxY, y, y + CARD_HEIGHT)));
+		},
+
+		select: function(isSelected) {
+			node.classList.toggle('card-selected', isSelected);
+			toggle(selected, this, isSelected);
 		}
 	};
-	
+
 	// "private" functions
 	
 	function display() {

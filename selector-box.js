@@ -18,41 +18,30 @@ function newSelectorBox(node) {
 		},
 
 		setPosition: function(x, y) {
-			node.style.transform = 'translate('
-					+ Math.min(x, startX) + 'px, '
-					+ Math.min(y, startY) + 'px)';
-			node.style.width = Math.abs(x - startX) + 'px';
-			node.style.height = Math.abs(y - startY) + 'px';
 			let boxX = Math.min(x, startX);
 			let boxY = Math.min(y, startY);
 			let boxWidth = Math.abs(x - startX);
 			let boxHeight = Math.abs(y - startY);
+			node.style.transform = 'translate(' + boxX + 'px, ' + boxY + 'px)'; 
+			node.style.width = boxWidth + 'px';
+			node.style.height = boxHeight + 'px';
 			for (let card of revealed) {
-				card.highlight(selected.has(card) || card.overlaps(boxX, boxY, boxWidth, boxHeight));
+				card.checkOverlap(boxX, boxY, boxWidth, boxHeight);
 			}
 		},
 
 		stop: function(e) {
 			node.classList.add('hide');
-			let boxX = Math.min(e.clientX, startX);
-			let boxY = Math.min(e.clientY, startY);
-			let boxWidth = Math.abs(e.clientX - startX);
-			let boxHeight = Math.abs(e.clientY - startY);
-			for (let card of revealed) {
-				if (card.overlaps(boxX, boxY, boxWidth, boxHeight)) {
-					selected.add(card);
-				}
-			}
 		},
-		
+
 		cancel: function() {
 			node.classList.add('hide');
-			// TODO: make better synchronization of selected/highlighted
-			for (let card of revealed) {
-				card.highlight(false);
-			}
 			grabbed = null;
-		}
+		},
+		
+		replace: function() {},
+		
+		remove: function() {},
 	};
 
 }

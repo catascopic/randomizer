@@ -16,17 +16,15 @@ function newDeck(contents) {
 				updateTotal();
 			}
 		}, 
-		
-		putOnBottom: function(card) {
-			contents.unshift(card.hide());
+
+		putOnBottom: function(data) {
+			contents.unshift(data);
 			updateTotal();
-			grabbed = null;
 		},
 
-		replace: function(card) {
-			if (contents.length) {
-				contents.unshift(card.replace(contents.pop()));
-			}
+		replace: function(data) {
+			contents.unshift(data);
+			return contents.pop();
 		},
 
 		placeGroup: function(x, y, rows, count, sort) {

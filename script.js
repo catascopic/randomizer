@@ -102,15 +102,18 @@ function toggleGrid() {
 }
 
 function putOnBottom() {
-	if (selected.size) {
-		for (let card of selected) {
-			deck.putOnBottom(card);
-		}
-		selected.clear();
+	if (grabbed != null) {
+		grabbed.remove();
+		grabbed = null;
+	} else {
+		removeSelected();
 	}
-	// TODO: do a better check than this
-	if (grabbed != null && grabbed.replace) {
-		deck.putOnBottom(grabbed);
+}
+
+function removeSelected() {
+	// copy because we're going to be modifying selected
+	for (let card of Array.from(selected)) {
+		card.remove();
 	}
 }
 
@@ -121,22 +124,23 @@ function sendToback() {
 }
 
 function replace() {
-	if (selected.size) {
-		// copy because we're going to be modifying selected
-		let copy = Array.from(selected);
-		for (let card of copy) {
-			deck.replace(card);
-		}
-	} else if (grabbed != null && grabbed.replace) {
-		deck.replace(grabbed);
+	if (grabbed != null) {
+		grabbed.replace();
+	} else if (selected.size) {
+		replaceSelected();
+	}
+}
+
+function replaceSelected() {
+	for (let card of selected) {
+		card.replace();
 	}
 }
 
 function selectAll() {
 	if (!setsEqual(revealed, selected)) {
 		for (let card of revealed) {
-			selected.add(card);
-			card.highlight();
+			card.select(true);
 		}
 	} else {
 		deselectAll();
@@ -157,10 +161,10 @@ function startSelectorBox(e) {
 }
 
 function deselectAll() {
+	// TODO: make this better by calling select.clear() non-redundantly
 	for (let card of selected) {
-		card.highlight(false);
+		card.select(false);
 	}
-	selected.clear();
 }
 
 function cancel() {
@@ -224,6 +228,12 @@ window.onload = function() {
 window.onmouseup = release;
 window.onmousemove = move;
 window.onmousedown = startSelectorBox;
+
+window.onbeforeunload = function() {
+	if (revealed.size) {
+		// return 'The current board will be lost.';
+	}
+}
 
 // SELECTORS
 
