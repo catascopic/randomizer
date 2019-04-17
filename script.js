@@ -7,7 +7,7 @@ var deck;
 var SELECTOR_BOX;
 var GENERATOR_BOX;
 var SEARCH_DIALOG;
-const SELECTION = newSelection();
+const SELECTION = new Selection();
 
 var screenWidth;
 var screenHeight;
@@ -42,8 +42,8 @@ function bound(value, min, max) {
 
 function grab(e, target) {
 	e.stopPropagation();
-	target.start(e);
 	grabbed = target;
+	grabbed.start(e);
 	measureScreen();
 }
 
@@ -104,7 +104,6 @@ function toggleGrid() {
 function putOnBottom() {
 	if (grabbed != null) {
 		grabbed.remove();
-		grabbed = null;
 	} else {
 		removeSelected();
 	}
@@ -113,7 +112,7 @@ function putOnBottom() {
 function removeSelected() {
 	// copy because we're going to be modifying selected
 	for (let card of Array.from(selected)) {
-		card.remove();
+		card.removeUnsafe();
 	}
 }
 
@@ -171,8 +170,9 @@ function startSelectorBox(e) {
 function deselectAll() {
 	// TODO: make this better by calling select.clear() non-redundantly
 	for (let card of selected) {
-		card.select(false);
+		card.deselectUnsafe();
 	}
+	selected.clear();
 }
 
 function cancel() {
@@ -201,10 +201,10 @@ function start() {
 	// ownedCards.sort((a, b) => a.text.length - b.text.length);
 	saveSession();
 	document.getElementById('modal').classList.add('hide');
-	deck = newDeck(ownedCards);
+	deck = new Deck(ownedCards);
 }
 
-var Card = {};
+var card = {};
 
 function init(json) {
 	sets = json.sets;
@@ -213,11 +213,11 @@ function init(json) {
 	// stupid code
 	for (let set of sets) {
 		for (let card of set.cards) {
-			Card[card.name.toLowerCase().replace(' ', '')] = card.name;
+			card[card.name.toLowerCase().replace(' ', '')] = card.name;
 		}
 	}
 	for (let card of promos) {
-		Card[card.name.toLowerCase().replace(' ', '')] = card.name;
+		card[card.name.toLowerCase().replace(' ', '')] = card.name;
 	}
 }
 
@@ -227,8 +227,8 @@ window.onload = function() {
 	updateStartButton();
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');
-	SELECTOR_BOX = newSelectorBox(document.getElementById('selector-box'));
-	GENERATOR_BOX = newGeneratorBox(document.getElementById('generator-box'));
+	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
+	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
 	SEARCH_DIALOG = newSearchDialog();
 	// document.getElementById('start-button').click();
 }
