@@ -60,6 +60,7 @@ function Card(initData) {
 		grabbed = null;
 	};
 	
+	// "unsafe" because if you call this with any remaining references to this object, could cause unwanted behavior.
 	this.removeUnsafe = function() {
 		deck.putOnBottom(data);
 		node.remove();
@@ -124,4 +125,5 @@ function initializeCard(node, data) {
 	let imageFile = data.name.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
 	node.getElementsByTagName('img')[0].src = `art/${imageFile}.png`;
 	node.getElementsByClassName('cost')[0].innerText = data.cost;
+	// node.getElementsByClassName('expansion')[0].innerText = data.set[0];
 }

@@ -70,7 +70,7 @@ function move(e) {
 }
 
 function shortcut(e) {
-	switch (e.key) {
+	switch (e.key.toLowerCase()) {
 		case 'a': selectAll();    break;
 		case 'd': putOnBottom();  break;
 		case 'g': toggleGrid();   break;
@@ -80,8 +80,9 @@ function shortcut(e) {
 		case 's': 
 		case 'm': deck.shuffle(); break;
 		case 'z': sendToBack();   break;
-		case 'Escape': cancel();  break;
-		case 'Delete': putOnBottom();  break;
+		case 'escape': cancel();  break;
+		case 'delete': putOnBottom();  break;
+		case 'backspace': break;
 		default: return;
 	}
 	e.preventDefault();
@@ -168,8 +169,8 @@ function startSelectorBox(e) {
 }
 
 function deselectAll() {
-	// TODO: make this better by calling select.clear() non-redundantly
 	for (let card of selected) {
+		// only removes highlighting, then we'll just clear the selected set
 		card.deselectUnsafe();
 	}
 	selected.clear();

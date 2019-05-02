@@ -67,7 +67,7 @@ html, body {
 
 .cost {
 	background-image: url(coin.svg);
-	font-family: 'Nova Oval';
+	font-family: 'Fira Sans';
 	font-size: 14px;
 	color: black;
 	
@@ -80,6 +80,26 @@ html, body {
 	bottom: 2px;
 	left: 2px;
 }
+
+/*
+.expansion {
+	font-family: 'Nova Mono';
+	font-size: 16px;
+	color: white;
+	text-shadow:
+		-1px -1px 0 rgba(0, 0, 0, 0.7),
+		 1px -1px 0 rgba(0, 0, 0, 0.7),
+		-1px  1px 0 rgba(0, 0, 0, 0.7),
+		 1px  1px 0 rgba(0, 0, 0, 0.7);
+
+	text-align: center;
+	line-height: 16px;
+	
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+}
+*/
 
 .card-selected:after {
 	content: "";
@@ -136,7 +156,8 @@ html, body {
 	font-size: 12px;
 }
 
-.text-box-text {	padding: 1px;
+.text-box-text {	
+	padding: 1px;
 	font-family: 'Fira Sans';
 	font-size: 10px;
 	white-space: pre-wrap;
