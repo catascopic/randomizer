@@ -74,8 +74,8 @@ function shortcut(e) {
 		case 'a': selectAll();    break;
 		case 'd': putOnBottom();  break;
 		case 'g': toggleGrid();   break;
-		case 'o': // TODO: organize();     break;
-		case 'q': // TODO: search();       break;
+		case 'o': /* TODO: organize(); */     break;
+		case 'q': /* TODO: search();   */     break;
 		case 'r': replace();      break;
 		case 's': 
 		case 'm': deck.shuffle(); break;
@@ -111,10 +111,11 @@ function putOnBottom() {
 }
 
 function removeSelected() {
-	// copy because we're going to be modifying selected
-	for (let card of Array.from(selected)) {
+	for (let card of selected) {
+		// removes card from view without deselecting it.
 		card.removeUnsafe();
 	}
+	selected.clear();
 }
 
 function sendToBack() {
