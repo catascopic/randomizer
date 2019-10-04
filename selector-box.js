@@ -13,6 +13,7 @@ function SelectorBox(node) {
 
 	this.move = function(e) {
 		this.setPosition(e.clientX, e.clientY);
+		document.body.classList.add(ANY_SELECTED);
 	};
 
 	this.setPosition = function(x, y) {
@@ -23,18 +24,24 @@ function SelectorBox(node) {
 		node.style.transform = `translate(${boxX}px, ${boxY}px)`;
 		node.style.width = `${boxWidth}px`;
 		node.style.height = `${boxHeight}px`;
-		for (let card of revealed) {
-			card.checkOverlap(boxX, boxY, boxWidth, boxHeight);
+		for (let tile of revealed) {
+			tile.checkOverlap(boxX, boxY, boxWidth, boxHeight);
 		}
+		updateAnySelected();
 	};
+	
+	function hide() {
+		node.classList.add('hide');
+		updateAnySelected();
+	}
 
 	this.stop = function(e) {
-		node.classList.add('hide');
+		hide();
 	};
 
 	this.cancel = function() {
-		node.classList.add('hide');
-		grabbed = null;
+		hide();
+		grabbed = DEFAULT_GRAB;
 	};
 }
 

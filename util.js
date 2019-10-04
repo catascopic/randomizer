@@ -41,6 +41,14 @@ function nextMultiple(value, unit) {
 	return Math.ceil(value / unit) * unit;
 }
 
+function comprehension(start, stop, step, callback) {
+	let a = [];
+	for (let i = start; i < stop; i += step) {
+		a.push(callback(i));
+	}
+	return a;
+}
+
 function shuffle(array) {
 	for (let i = array.length; i > 1; i--) {
 		swap(array, i - 1, randInt(0, i));

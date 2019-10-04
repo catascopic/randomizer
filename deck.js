@@ -1,28 +1,27 @@
 function Deck(contents) {
 	
-	const node = document.getElementById('deck');
-	const total = document.getElementById('total');
+	const deckNameNode = document.getElementById('deckName');
 	
 	function updateTotal() {
-		total.innerText = contents.length;
+		deckNameNode.innerText = `Deck (${contents.length})`;
 	}
 	updateTotal();
 	
 	this.draw = function(e) {
 		deselectAll();
 		if (contents.length) {
-			grab(e, new Card(contents.pop()));
+			grab(e, new Tile(contents.pop()));
 			updateTotal();
 		}
 	};
 
-	this.putOnBottom = function(data) {
-		contents.unshift(data);
+	this.putOnBottom = function(card) {
+		contents.unshift(card);
 		updateTotal();
 	};
 
-	this.replace = function(data) {
-		contents.unshift(data);
+	this.replace = function(card) {
+		contents.unshift(card);
 		return contents.pop();
 	};
 
@@ -33,27 +32,25 @@ function Deck(contents) {
 		if (sort) {
 			popped.sort((a, b) => a.cost - b.cost);
 		}
-		
 		for (let i = 0; i < total; i++) {
-			new Card(popped[i]).setPosition(x + Math.floor(i / rows) * CARD_HEIGHT, y + (i % rows) * CARD_WIDTH);
+			new Tile(popped[i]).setPosition(x + Math.floor(i / rows) * TILE_HEIGHT, y + (i % rows) * TILE_WIDTH);
 		}
 		updateTotal();
-	},
+	};
+	
+	const rotateFrames = 16;
+	let frames = [];
+	for (let i = 0; i < rotateFrames; i++) {
+		frames.push({transform: `rotate(${(rotateFrames - i) * (i % 2 ? -1 : 1)}deg)`});
+	}
 
 	this.shuffle = function() {
 		shuffle(contents);
-		node.animate([
-			{ filter: 'none' },
-			{ filter: 'blur(5px)' }, 
-			{ filter: 'none' }
-		], {
-			duration: 600,
-			iterations: 1
-		});
+		deckNameNode.animate(frames, { duration: 500, iterations: 1 });
 	};
 	
 	// drawSearch: function(result) {
-		// grab(result.e, new Card(contents.splice(contents.findIndex(c => c.name == result.name), 1)[0]));
+		// grab(result.e, new Tile(contents.splice(contents.findIndex(c => c.name == result.name), 1)[0]));
 		// updateTotal();
 	// },
 	

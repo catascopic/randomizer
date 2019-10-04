@@ -36,13 +36,24 @@ html, body {
 }
 
 .deck {
-	background-color: Aqua;
+	background-color: rgba(0, 0, 0, .1);
 	font-family: 'Fira Sans';
 	font-size: 16px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.deckName {
+	background-color: aqua;
+	height: 100px;
+	width: 100px;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .card {
@@ -54,7 +65,7 @@ html, body {
 	outline-offset: -2px;
 }
 
-.title {
+.name {
 	font-size: 14px;
 	text-align: center;
 	width: 100%;
@@ -101,13 +112,12 @@ html, body {
 }
 */
 
-.card-selected:after {
-	content: "";
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	background: rgba(0, 0, 255, .2);
-	/* box-shadow: inset 0 0 20px 5px rgba(0, 0, 255, .2); */
+.any-selected {
+	background-color: #F0F0FF;
+}
+
+.any-selected > .card:not(.card-selected) {
+	filter: contrast(calc(0.5 / (2 - 0.5))) brightness(calc(2 - 0.5));
 }
 
 .selector-box {
@@ -288,37 +298,37 @@ hr {
 	user-select: none;
 }
 
-.action {
+.action, .Action {
 	background-color: var(--action);
 	color: black;
 }
 
-.reaction {
+.reaction, .Reaction {
 	background-color: var(--reaction);
 	color: black;
 }
 
-.treasure {
+.treasure, .Treasure {
 	background-color: var(--treasure);
 	color: black;
 }
 
-.victory {
+.victory, .Victory {
 	background-color: var(--victory);
 	color: black;
 }
 
-.reserve {
+.reserve, .Reserve {
 	background-color: var(--reserve);
 	color: black;
 }
 
-.night {
+.night, .Night {
 	background-color: var(--night);
 	color: white;
 }
 
-.duration {
+.duration, .Duration {
 	background-color: var(--duration);
 	color: black;
 }

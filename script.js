@@ -1,6 +1,12 @@
 'use strict';
 
-var grabbed = null;
+const DEFAULT_GRAB = new DefaultGrab();
+const TILE_WIDTH = 120;
+const TILE_HEIGHT = TILE_WIDTH;
+const GRID_SIZE = 20;
+const ANY_SELECTED = 'any-selected';
+
+var grabbed = DEFAULT_GRAB;
 var revealed = new Set();
 var selected = new Set();
 var deck;
@@ -12,10 +18,6 @@ const SELECTION = new Selection();
 var screenWidth;
 var screenHeight;
 var topZIndex = 0;
-
-const CARD_WIDTH = 120;
-const CARD_HEIGHT = CARD_WIDTH;
-const GRID_SIZE = 20;
 
 var gridMode = false;
 var gridFunc = noGrid;
@@ -34,6 +36,10 @@ function noGrid(n) {
 
 function snapToGrid(n) {
 	return nearestMultiple(n, GRID_SIZE);
+}
+
+function noDrag(e) {
+	e.preventDefault();
 }
 
 function bound(value, min, max) {
@@ -57,32 +63,32 @@ function measureScreen() {
 }
 
 function release(e) {
-	if (grabbed != null) {
-		grabbed.stop(e);
-		grabbed = null;
-	}
+	grabbed.stop(e);
+	grabbed = DEFAULT_GRAB;
 }
 
 function move(e) {
-	if (grabbed) {
-		grabbed.move(e);
-	}
+	grabbed.move(e);
 }
 
 function shortcut(e) {
-	switch (e.key.toLowerCase()) {
+	switch (e.key) {
 		case 'a': selectAll();    break;
-		case 'd': putOnBottom();  break;
+		case 'd': grabbed.remove();  break;
 		case 'g': toggleGrid();   break;
 		case 'o': /* TODO: organize(); */     break;
 		case 'q': /* TODO: search();   */     break;
-		case 'r': replace();      break;
+		case 'r': grabbed.replace();      break;
 		case 's': 
 		case 'm': deck.shuffle(); break;
-		case 'z': sendToBack();   break;
+		case 'z': grabbed.sendToBack();   break;
 		case 'escape': cancel();  break;
-		case 'delete': putOnBottom();  break;
+		case 'delete': grabbed.remove();  break;
 		case 'backspace': break;
+		case 'ArrowUp':    shiftSelected( 0, -1); break;
+		case 'ArrowDown':  shiftSelected( 0,  1); break;
+		case 'ArrowLeft':  shiftSelected(-1,  0); break;
+		case 'ArrowRight': shiftSelected( 1,  0); break;
 		default: return;
 	}
 	e.preventDefault();
@@ -93,8 +99,8 @@ function toggleGrid() {
 	document.body.classList.toggle('grid', gridMode);
 	if (gridMode) {
 		gridFunc = snapToGrid;
-		for (let card of revealed) {
-			card.snap();
+		for (let tile of revealed) {
+			tile.snap();
 		}
 	} else {
 		gridFunc = noGrid;
@@ -102,58 +108,24 @@ function toggleGrid() {
 	measureScreen();
 }
 
-function putOnBottom() {
-	if (grabbed != null) {
-		grabbed.remove();
-	} else {
-		removeSelected();
-	}
-}
-
-function removeSelected() {
-	for (let card of selected) {
-		// removes card from view without deselecting it.
-		card.removeUnsafe();
-	}
+function clearSelected() {
 	selected.clear();
-}
-
-function sendToBack() {
-	if (grabbed != null) {
-		grabbed.sendToBack();
-	} else if (selected.size) {
-		sendSelectedToBack();
-	}
-}
-
-function sendSelectedToBack() {
-	for (let card of selected) {
-		card.sendToBack();
-	}
-}
-
-function replace() {
-	if (grabbed != null) {
-		grabbed.replace();
-	} else if (selected.size) {
-		replaceSelected();
-	}
-}
-
-function replaceSelected() {
-	for (let card of selected) {
-		card.replace();
-	}
+	document.body.classList.remove(ANY_SELECTED);
 }
 
 function selectAll() {
 	if (!setsEqual(revealed, selected)) {
-		for (let card of revealed) {
-			card.select(true);
+		for (let tile of revealed) {
+			tile.select(true);
 		}
+		updateAnySelected();
 	} else {
 		deselectAll();
 	}
+}
+
+function updateAnySelected() {
+	document.body.classList.toggle(ANY_SELECTED, selected.size);
 }
 
 function drawCard(e) {
@@ -170,18 +142,25 @@ function startSelectorBox(e) {
 }
 
 function deselectAll() {
-	for (let card of selected) {
+	for (let tile of selected) {
 		// only removes highlighting, then we'll just clear the selected set
-		card.deselectUnsafe();
+		tile.deselectUnsafe();
 	}
-	selected.clear();
+	clearSelected();
 }
 
 function cancel() {
-	if (grabbed != null) {
-		grabbed.cancel();
-	}
+	grabbed.cancel();
 	deselectAll();
+}
+
+function shiftSelected(deltaX, deltaY) {
+	if (selected.size) {
+		let coef = gridMode ? GRID_SIZE : 1;
+		for (let tile of selected) {
+			tile.shift(coef * deltaX, coef * deltaY);
+		}
+	}
 }
 
 function start() {
@@ -206,21 +185,9 @@ function start() {
 	deck = new Deck(ownedCards);
 }
 
-var card = {};
-
 function init(json) {
 	sets = json.sets;
 	promos = json.promos;
-	
-	// stupid code
-	for (let set of sets) {
-		for (let card of set.cards) {
-			card[card.name.toLowerCase().replace(' ', '')] = card.name;
-		}
-	}
-	for (let card of promos) {
-		card[card.name.toLowerCase().replace(' ', '')] = card.name;
-	}
 }
 
 window.onload = function() {
@@ -291,4 +258,4 @@ function saveSession() {
 	}));
 }
 
-const CARD_TYPES = ["Action", "Treasure", "Victory", "Attack", "Duration", "Reaction", "Looter", "Knight", "Reserve", "Traveller", "Gathering", "Castle", "Night", "Fate", "Doom"];
+const CARD_TYPES = ['Action', 'Treasure', 'Victory', 'Attack', 'Duration', 'Reaction', 'Looter', 'Knight', 'Reserve', 'Traveller', 'Gathering', 'Castle', 'Night', 'Fate', 'Doom'];

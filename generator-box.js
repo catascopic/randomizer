@@ -19,14 +19,14 @@ function GeneratorBox(node) {
 	};
 	
 	this.move = function(e) {
-		let x = bound(e.clientX, 0, screenWidth  - CARD_WIDTH + 1);
-		let y = bound(e.clientY, 0, screenHeight - CARD_HEIGHT + 1);
+		let x = bound(e.clientX, 0, screenWidth  - TILE_WIDTH + 1);
+		let y = bound(e.clientY, 0, screenHeight - TILE_HEIGHT + 1);
 		
-		countAcross = getCount(x, gridFunc(anchorX), CARD_WIDTH);
-		countDown = getCount(y, gridFunc(anchorY), CARD_HEIGHT);
+		countAcross = getCount(x, gridFunc(anchorX), TILE_WIDTH);
+		countDown = getCount(y, gridFunc(anchorY), TILE_HEIGHT);
 
-		node.style.width = `${countAcross * CARD_WIDTH}px`;
-		node.style.height = `${countDown * CARD_HEIGHT}px`;
+		node.style.width = `${countAcross * TILE_WIDTH}px`;
+		node.style.height = `${countDown * TILE_HEIGHT}px`;
 		node.style.transform = `translate(${gridFunc(Math.min(x, anchorX))}px, ${gridFunc(Math.min(y, anchorY))}px)`;
 		node.innerText = countAcross * countDown;
 	};
@@ -34,14 +34,14 @@ function GeneratorBox(node) {
 	this.stop = function(e) {
 		node.classList.add('hide');
 		deck.placeGroup(
-				Math.min(bound(e.clientX, 0, screenWidth  - CARD_WIDTH),  anchorX), 
-				Math.min(bound(e.clientY, 0, screenHeight - CARD_HEIGHT), anchorY), 
+				Math.min(bound(e.clientX, 0, screenWidth  - TILE_WIDTH),  anchorX), 
+				Math.min(bound(e.clientY, 0, screenHeight - TILE_HEIGHT), anchorY), 
 				countDown, countAcross * countDown, true);
 	}
 	
 	this.cancel = function() {
 		node.classList.add('hide');
-		grabbed = null;
+		grabbed = DEFAULT_GRAB;
 	};
 }
 

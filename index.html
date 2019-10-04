@@ -7,8 +7,9 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 
 <script src="grabbable.js"></script>
+<script src="default-grab.js"></script>
 <script src="deck.js"></script>
-<script src="card.js"></script>
+<script src="tile.js"></script>
 <script src="selection.js"></script>
 <script src="selector-box.js"></script>
 <script src="generator-box.js"></script>
@@ -45,17 +46,9 @@
 		</div>
 	</div>
 
-	<div class="deck" id="deck" onmousedown="drawCard(event)" ondragstart="event.preventDefault()">Deck (<span id="total">0</span>)</div>
-	
-	<template id="card">
-		<div class="card">
-			<div class="title"></div>
-			<img ondragstart="event.preventDefault()">
-			<div class="cost"></div>
-			<!-- <div class="expansion"></div> -->
-			<div class="overlay"></div>
-		</div>
-	</template>
+	<div class="deck" onmousedown="drawCard(event)" ondragstart="event.preventDefault()">
+		<div class="deckName" id="deckName">Deck</div>
+	</div>
 	
 	<div class="selector-box hide" id="selector-box"></div>
 	<div class="generator-box hide" id="generator-box"></div>
