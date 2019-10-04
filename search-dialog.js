@@ -11,7 +11,7 @@ function newSearchDialog() {
 				node.classList
 				grid.appendChild(node);
 			}
-			node.classList.remove('hide');
+			show(node);
 		}
 	};
 }

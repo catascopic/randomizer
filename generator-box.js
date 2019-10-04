@@ -11,7 +11,7 @@ function GeneratorBox(node) {
 	
 	this.start = function(e) {
 		measureScreen();
-		node.classList.remove('hide');
+		show(node);
 		node.style.zIndex = topZIndex;
 		anchorX = e.clientX;
 		anchorY = e.clientY;
@@ -19,11 +19,24 @@ function GeneratorBox(node) {
 	};
 	
 	this.move = function(e) {
-		let x = bound(e.clientX, 0, screenWidth  - TILE_WIDTH + 1);
-		let y = bound(e.clientY, 0, screenHeight - TILE_HEIGHT + 1);
+		let x;
+		let y;
+		countAcross;
+		countDown;
 		
-		countAcross = getCount(x, gridFunc(anchorX), TILE_WIDTH);
-		countDown   = getCount(y, gridFunc(anchorY), TILE_HEIGHT);
+		if (e.clientX < anchorX) {
+			// TODO
+		} else {
+			x = bound(e.clientX, 0, screenWidth  - TILE_WIDTH + 1);
+			countAcross = getCount(x, gridFunc(anchorX), TILE_WIDTH);
+		}
+		
+		if (e.clientY < anchorY) {
+			// TODO
+		} else {
+			y = bound(e.clientY, 0, screenHeight - TILE_HEIGHT + 1);
+			countDown = getCount(y, gridFunc(anchorY), TILE_HEIGHT);
+		}
 
 		node.style.width =  `${countAcross * TILE_WIDTH }px`;
 		node.style.height = `${countDown   * TILE_HEIGHT}px`;
@@ -32,7 +45,7 @@ function GeneratorBox(node) {
 	};
 
 	this.stop = function(e) {
-		node.classList.add('hide');
+		hide(node);
 		deck.placeGroup(
 				Math.min(bound(e.clientX, 0, screenWidth  - TILE_WIDTH),  anchorX), 
 				Math.min(bound(e.clientY, 0, screenHeight - TILE_HEIGHT), anchorY), 
@@ -40,7 +53,7 @@ function GeneratorBox(node) {
 	};
 	
 	this.cancel = function() {
-		node.classList.add('hide');
+		hide(node);
 		grabbed = DEFAULT_GRAB;
 	};
 }

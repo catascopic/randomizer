@@ -4,7 +4,7 @@ function SelectorBox(node) {
 	let startY;
 	
 	this.start = function(e) {
-		node.classList.remove('hide');
+		show(node);
 		node.style.zIndex = topZIndex;
 		startX = e.clientX;
 		startY = e.clientY;
@@ -30,17 +30,15 @@ function SelectorBox(node) {
 		updateAnySelected();
 	};
 	
-	function hide() {
-		node.classList.add('hide');
+	function hideAndUpdate() {
+		hide(node);
 		updateAnySelected();
 	}
 
-	this.stop = function(e) {
-		hide();
-	};
+	this.stop = hideAndUpdate;
 
 	this.cancel = function() {
-		hide();
+		hideAndUpdate()
 		grabbed = DEFAULT_GRAB;
 	};
 }

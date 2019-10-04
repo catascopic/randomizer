@@ -68,3 +68,11 @@ function swap(array, i, j) {
 	array[i] = array[j];
 	array[j] = temp;
 }
+
+function show(node, state = false) {
+	node.classList.toggle('hide', state);
+}
+
+function hide(node) {
+	show(node, true);
+}

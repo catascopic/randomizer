@@ -161,7 +161,7 @@ function start() {
 	shuffle(ownedCards);
 	// ownedCards.sort((a, b) => a.text.length - b.text.length);
 	saveSession();
-	document.getElementById('modal').classList.add('hide');
+	hide(document.getElementById('modal'));
 	deck = new Deck(ownedCards);
 }
 
