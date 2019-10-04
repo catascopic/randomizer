@@ -92,26 +92,6 @@ html, body {
 	left: 2px;
 }
 
-/*
-.expansion {
-	font-family: 'Nova Mono';
-	font-size: 16px;
-	color: white;
-	text-shadow:
-		-1px -1px 0 rgba(0, 0, 0, 0.7),
-		 1px -1px 0 rgba(0, 0, 0, 0.7),
-		-1px  1px 0 rgba(0, 0, 0, 0.7),
-		 1px  1px 0 rgba(0, 0, 0, 0.7);
-
-	text-align: center;
-	line-height: 16px;
-	
-	position: absolute;
-	bottom: 2px;
-	right: 2px;
-}
-*/
-
 .any-selected {
 	background-image: linear-gradient(white, #C0C0FF);
 }
@@ -211,90 +191,6 @@ hr {
     padding: 0;
 }
 
-
-/* SELECTORS */
-
-
-.modal {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0,0,0,0.4);
-	display: flex;
-	justify-content: center;
-	overflow: auto;
-	z-index: 1;
-}
-
-.panel {
-	margin-top: 24px;
-	width: 400px;
-	display: grid;
-	grid-gap: 6px;
-	position: absolute;
-	padding: 20px;
-	background-color: white;
-}
-
-.selectors {
-	display: grid;
-	grid-gap: inherit;
-}
-
-.selector {
-	font-family: 'Nova Oval';
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 28px;
-	cursor: pointer;
-	border-radius: 6px;
-	border-width: 3px;
-	border-style: solid;
-}
-
-.set.selector {
-	border-color: var(--set-color);
-	color: var(--set-color);
-	font-size: 20px;
-}
-
-.promo.selector {
-	border-color: var(--promo-color);
-	color: var(--promo-color);
-	font-size: 18px;
-}
-
-.selector.selected {
-	color: white;
-}
-
-.set.selector.selected {
-	background-color: var(--set-color);
-}
-
-.promo.selector.selected {
-	background-color: var(--promo-color);
-}
-
-.save-button {
-	font-family: 'Fira Sans';
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 28px;
-	cursor: pointer;
-	border-radius: 6px;
-	border: 3px solid gray;
-	font-size: 20px;
-}
-
-.disabled {
-	color: gray;
-	border-color: lightgray;
-	cursor: not-allowed;
-}
-
 * {
 	-moz-user-select: none;
 	-webkit-user-select: none;
@@ -336,6 +232,50 @@ hr {
 	background-color: var(--duration);
 	color: black;
 }
+
+/* SELECTORS */
+
+
+.modal-background {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: auto;
+	z-index: 1;
+}
+
+.modal {
+	background-color: white;
+	padding: 4px;
+	display: inline-block;
+	display: flex;
+	flex-direction: column;
+	border: 4px solid black;
+}
+
+.create-selectors {
+	display: flex;
+}
+
+.create-select {
+	margin: 4px;
+	font-size: 24px;
+	font-family: "Nova Oval";
+}
+
+.start-button {
+	margin: 4px;
+	display: block;
+	box-sizing: border-box;
+	font-family: "Fira Sans";
+	font-size: 24px;
+}
+
+/* IMPORTANT */
 
 .hide {
 	display: none;

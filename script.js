@@ -164,6 +164,19 @@ function shiftSelected(deltaX, deltaY) {
 	}
 }
 
+function updateStartButton(options) {
+	document.getElementById('start-button').disabled = !anySelected(options);
+}
+
+function anySelected(options) {
+	for (let option of options) {
+		if (option.selected) {
+			return true;
+		}
+	}
+	return false;
+}
+
 function start() {
 	if (!ownedSets.size) {
 		return;
@@ -180,7 +193,7 @@ function start() {
 		}
 	}
 	shuffle(ownedCards);
-	// ownedCards.sort((a, b) => a.text.length - b.text.length);
+
 	saveSession();
 	document.getElementById('modal').classList.add('hide');
 	deck = new Deck(ownedCards);
@@ -194,13 +207,9 @@ function init(json) {
 window.onload = function() {
 	loadSession();
 	measureScreen();
-	updateStartButton();
-	createSelectors(1, ownedSets,   sets,   'set');
-	createSelectors(2, ownedPromos, promos, 'promo');
 	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
 	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
 	SEARCH_DIALOG = newSearchDialog();
-	// document.getElementById('start-button').click();
 }
 
 window.onmouseup = release;
@@ -210,36 +219,6 @@ window.onmousedown = startSelectorBox;
 window.onbeforeunload = function() {
 	if (revealed.size) {
 		// return 'The current board will be lost.';
-	}
-}
-
-// SELECTORS
-
-function updateStartButton() {
-	document.getElementById('start-button').classList.toggle('disabled', !ownedSets.size);
-}
-
-function createSelectors(col, selectorSet, items, className) {
-	let row = 1;
-	for (let item of items) {
-		let node = document.createElement('div');
-		node.innerText = item.name;
-		node.classList.add('selector', 'noselect', className);
-		node.style.gridRow = row++;
-		node.style.gridColumn = col;
-		if (selectorSet.has(item.name)) {
-			node.classList.add('selected');
-		}
-		node.onclick = function(e) {
-			let selected = !selectorSet.delete(item.name);
-			if (selected) {
-				selectorSet.add(item.name);
-			}
-			node.classList.toggle('selected', selected);
-			updateStartButton();
-			e.stopPropagation();
-		};
-		document.getElementById('selectors').appendChild(node);
 	}
 }
 

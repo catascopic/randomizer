@@ -25,24 +25,39 @@
 </head>
 <body>
 
-	<div class="modal" id="modal" onclick="start()">
-		<div class="panel" id="panel">
-			<div class="selectors" id="selectors"></div>
-			<div class="save-button" id="start-button" onclick="start()">Start</div>
-		</div>
-	</div>
-	
-	<div class="serch-modal hide" id="search-modal">
-		<div class="search-grid" id="search-grid">
-			
-		</div>
-	</div>
-	
-	<div class="text-modal hide" id="text-modal">
-		<div class="text-box" id="text-box">
-			<div class="text-box-name" id="text-box-name"></div>
-			<div class="text-box-text" id="text-box-text"></div>
-			<div class="text-box-types" id="text-box-types"></div>
+	<div id="modal" class="modal-background" onmousedown="event.stopPropagation()">
+		<div class="modal">
+			<div class="create-selectors">
+				<select id="selectExpansions" class="create-select" size="13" multiple onchange="updateStartButton(this.options)">
+					<option value="Dominion" selected="true">Dominion (Base)</option>
+					<option value="Intrigue">Intrigue</option>
+					<option value="Seaside">Seaside</option>
+					<option value="Alchemy">Alchemy</option>
+					<option value="Prosperity">Prosperity</option>
+					<option value="Cornucopia">Cornucopia</option>
+					<option value="Hinterlands">Hinterlands</option>
+					<option value="Dark Ages">Dark Ages</option>
+					<option value="Guilds">Guilds</option>
+					<option value="Adventures">Adventures</option>
+					<option value="Empires">Empires</option>
+					<option value="Nocturne">Nocturne</option>
+					<option value="Renaissance">Renaissance</option>
+				</select>
+				<select id="selectPromos" class="create-select" size="11" multiple>
+					<option value="Black Market">Black Market</option>
+					<option value="Envoy">Envoy</option>
+					<option value="Seaside">Walled Village</option>
+					<option value="Governor">Governor</option>
+					<option value="Stash">Stash</option>
+					<option value="Prince">Prince</option>
+					<option value="Summon">Summon</option>
+					<option value="Sauna/Avanto">Sauna/Avanto</option>
+					<option value="Dismantle">Dismantle</option>
+					<option value="Church">Church</option>
+					<option value="Captain">Captain</option>
+				</select>
+			</div>
+			<button id="start-button" class="start-button" onclick="start()">Start</button>
 		</div>
 	</div>
 
