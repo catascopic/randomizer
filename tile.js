@@ -122,13 +122,16 @@ function Tile(initCard) {
 	tileNode.style.zIndex = topZIndex++;
 	let _this = this;
 	tileNode.onmousedown = function(event) {
+		event.stopPropagation();
 		if (event.shiftKey) {
 			console.log(card.name);
 			console.log(card.text);
 			console.log(`${card.types.join('-')} (${card.cost})`);
 			console.log();
-		}
-		if (selected.has(_this)) {
+		} else if (event.ctrlKey) {
+			_this.select(!selected.has(_this));
+			updateAnySelected();
+		} else if (selected.has(_this)) {
 			grab(event, SELECTION);
 		} else {
 			deselectAll();

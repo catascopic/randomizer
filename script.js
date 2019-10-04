@@ -82,8 +82,8 @@ function shortcut(e) {
 		case 's': 
 		case 'm': deck.shuffle(); break;
 		case 'z': grabbed.sendToBack();   break;
-		case 'escape': cancel();  break;
-		case 'delete': grabbed.remove();  break;
+		case 'Escape': cancel();  break;
+		case 'Delete': grabbed.remove();  break;
 		case 'backspace': break;
 		case 'ArrowUp':    shiftSelected( 0, -1); break;
 		case 'ArrowDown':  shiftSelected( 0,  1); break;
@@ -106,11 +106,6 @@ function toggleGrid() {
 		gridFunc = noGrid;
 	}
 	measureScreen();
-}
-
-function clearSelected() {
-	selected.clear();
-	document.body.classList.remove(ANY_SELECTED);
 }
 
 function selectAll() {
@@ -136,9 +131,15 @@ function drawCard(e) {
 }
 
 function startSelectorBox(e) {
+	// TODO: multiple selection boxes
 	deselectAll();
 	grabbed = e.shiftKey ? GENERATOR_BOX : SELECTOR_BOX;
 	grabbed.start(e);
+}
+
+function cancel() {
+	grabbed.cancel();
+	deselectAll();
 }
 
 function deselectAll() {
@@ -149,9 +150,9 @@ function deselectAll() {
 	clearSelected();
 }
 
-function cancel() {
-	grabbed.cancel();
-	deselectAll();
+function clearSelected() {
+	selected.clear();
+	document.body.classList.remove(ANY_SELECTED);
 }
 
 function shiftSelected(deltaX, deltaY) {

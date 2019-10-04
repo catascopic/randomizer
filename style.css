@@ -113,7 +113,11 @@ html, body {
 */
 
 .any-selected {
-	background-color: #F0F0FF;
+	background-image: linear-gradient(white, #C0C0FF);
+}
+
+.any-selected.grid {
+	background-image: url("grid.svg"), linear-gradient(white, #C0C0FF);
 }
 
 .any-selected > .card:not(.card-selected) {

@@ -1,4 +1,4 @@
-function DefaultGrab(initCard) {
+function DefaultGrab() {
 
 	this.sendToBack = function() {
 		for (let tile of selected) {
@@ -16,8 +16,8 @@ function DefaultGrab(initCard) {
 	};
 	
 	this.replace = function() {
-		for (let card of selected) {
-			card.replace();
+		for (let tile of selected) {
+			tile.replace();
 		}
 	};
 
