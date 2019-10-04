@@ -9,6 +9,10 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function noDrag(e) {
+	e.preventDefault();
+}
+
 function toggle(set, item, state) {
 	if (state) {
 		set.add(item);
@@ -29,6 +33,10 @@ function setsEqual(set1, set2) {
     return true;
 }
 
+function bound(value, min, max) {
+	return Math.min(Math.max(value, min), max);
+}
+
 function nearestMultiple(value, unit) {
 	return Math.round(value / unit) * unit;
 }
@@ -41,12 +49,8 @@ function nextMultiple(value, unit) {
 	return Math.ceil(value / unit) * unit;
 }
 
-function comprehension(start, stop, step, callback) {
-	let a = [];
-	for (let i = start; i < stop; i += step) {
-		a.push(callback(i));
-	}
-	return a;
+function between(value, min, max) {
+	return value >= min && value < max;
 }
 
 function shuffle(array) {

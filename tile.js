@@ -1,4 +1,4 @@
-function Tile(initCard) {
+function Tile(initCard, initX = 0, initY = 0, initZ) {
 	
 	let card = initCard;
 	
@@ -19,22 +19,22 @@ function Tile(initCard) {
 		tileNode.classList.add(...card.types);
 		nameNode.innerText = card.name;
 		costNode.innerText = card.cost;
-		let imageFile = card.name.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
-		artNode.src = `art/${imageFile}.png`;
+		artNode.src = `art/${getImageFileName(card.name)}.png`;
 	}
-	
+
 	initialize();
 	
-	let x = 0;
-	let y = 0;
+	let x = initX;
+	let y = initY;
 	let offsetX;
 	let offsetY;
-	let zIndex = topZIndex++;
+	let z = initZ;
 	
 	this.start = function(e) {
 		offsetX = e.clientX - x;
 		offsetY = e.clientY - y;
-		this.toTop();
+		z = topZIndex++;
+		tileNode.style.zIndex = z;
 	};
 
 	this.move = function(e) {
@@ -53,11 +53,6 @@ function Tile(initCard) {
 		display();
 	};
 
-	this.toTop = function() {
-		zIndex = topZIndex++;
-		tileNode.style.zIndex = zIndex;
-	};
-
 	this.sendToBack = function() {
 		for (let card of revealed) {
 			card.bump();
@@ -67,8 +62,8 @@ function Tile(initCard) {
 	};
 
 	this.bump = function() {
-		zIndex++;
-		tileNode.style.zIndex = zIndex;
+		z++;
+		tileNode.style.zIndex = z;
 	};
 	
 	this.replace = function() {
@@ -82,7 +77,7 @@ function Tile(initCard) {
 		grabbed = DEFAULT_GRAB;
 	};
 	
-	// "unsafe" because if you call this with any remaining references to this object, could cause unwanted behavior.
+	// unsafe: could still exist as grabbed, callers must ensure this is OK
 	this.removeUnsafe = function() {
 		if (!revealed.delete(this)) {
 			throw 'failed remove';
@@ -101,33 +96,37 @@ function Tile(initCard) {
 		toggle(selected, this, isSelected);
 	};
 	
+	// unsafe: only changes the appearance, callers must actually remove it from the selected set
 	this.deselectUnsafe = function(isSelected) {
 		tileNode.classList.remove('card-selected');
 	};
 	
 	this.shift = function(deltaX, deltaY) {
 		this.setPosition(x + deltaX, y + deltaY);
+	};
+	
+	this.getName = function() {
+		return card.name;
 	}
-
-	// "private" functions
+	
+	this.save = function() {
+		return {
+			card: card.name,
+			x: x,
+			y: y,
+			z: z
+		};
+	}
 	
 	function display() {
 		tileNode.style.transform = `translate(${x}px, ${y}px)`;
 	}
-
-	function between(value, min, max) {
-		return value >= min && value < max;
-	}
 	
-	tileNode.style.zIndex = topZIndex++;
 	let _this = this;
 	tileNode.onmousedown = function(event) {
 		event.stopPropagation();
 		if (event.shiftKey) {
-			console.log(card.name);
-			console.log(card.text);
-			console.log(`${card.types.join('-')} (${card.cost})`);
-			console.log();
+			console.log(`${card.name}\n${card.text}\n${card.types.join('-')} (${card.cost})`);
 		} else if (event.ctrlKey) {
 			_this.select(!selected.has(_this));
 			updateAnySelected();
@@ -139,8 +138,13 @@ function Tile(initCard) {
 		}
 	};
 	
+	display();
 	document.body.appendChild(tileNode);
 	revealed.add(this);
 }
 
 Tile.prototype = new Grabbable();
+
+function getImageFileName(cardName) {
+	return cardName.toLowerCase().replace(/[ \-\/]+/g, '_').replace(/[^a-z_]+/g, '');
+}

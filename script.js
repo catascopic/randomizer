@@ -38,14 +38,6 @@ function snapToGrid(n) {
 	return nearestMultiple(n, GRID_SIZE);
 }
 
-function noDrag(e) {
-	e.preventDefault();
-}
-
-function bound(value, min, max) {
-	return Math.min(Math.max(value, min), max);
-}
-
 function grab(e, target) {
 	e.stopPropagation();
 	grabbed = target;
@@ -54,41 +46,37 @@ function grab(e, target) {
 }
 
 function measureScreen() {
-	screenWidth = document.body.scrollWidth;
-	screenHeight = document.body.scrollHeight;
 	if (gridMode) {
-		screenWidth = Math.floor(screenWidth / GRID_SIZE) * GRID_SIZE;
-		screenHeight = Math.floor(screenHeight / GRID_SIZE) * GRID_SIZE;
+		screenWidth  = lastMultiple(document.body.scrollWidth,  GRID_SIZE);
+		screenHeight = lastMultiple(document.body.scrollHeight, GRID_SIZE);
+	} else {
+		screenWidth  = document.body.scrollWidth;
+		screenHeight = document.body.scrollHeight;
 	}
-}
-
-function release(e) {
-	grabbed.stop(e);
-	grabbed = DEFAULT_GRAB;
-}
-
-function move(e) {
-	grabbed.move(e);
 }
 
 function shortcut(e) {
 	switch (e.key) {
-		case 'a': selectAll();    break;
-		case 'd': grabbed.remove();  break;
-		case 'g': toggleGrid();   break;
-		case 'o': /* TODO: organize(); */     break;
-		case 'q': /* TODO: search();   */     break;
-		case 'r': grabbed.replace();      break;
+		
+		case 'a': selectAll(); break;
+		case 'Delete': 
+		case 'd': grabbed.remove(); break;
+		case 'g': toggleGrid(); break;
+		case 'o': organize(); break;
+		case 'q': search(); break;
+		case 'r': grabbed.replace(); break;
 		case 's': 
 		case 'm': deck.shuffle(); break;
-		case 'z': grabbed.sendToBack();   break;
-		case 'Escape': cancel();  break;
-		case 'Delete': grabbed.remove();  break;
-		case 'backspace': break;
+		case 'z': grabbed.sendToBack(); break;
+		
+		case 'Escape': cancel(); break;
+		case 'backspace': /* stop back button */ break;
+		
 		case 'ArrowUp':    shiftSelected( 0, -1); break;
 		case 'ArrowDown':  shiftSelected( 0,  1); break;
 		case 'ArrowLeft':  shiftSelected(-1,  0); break;
 		case 'ArrowRight': shiftSelected( 1,  0); break;
+		
 		default: return;
 	}
 	e.preventDefault();
@@ -124,17 +112,8 @@ function updateAnySelected() {
 }
 
 function drawCard(e) {
-	if (grabbed) {
-		grabbed.stop();
-	}
+	grabbed.stop();
 	deck.draw(e);
-}
-
-function startSelectorBox(e) {
-	// TODO: multiple selection boxes
-	deselectAll();
-	grabbed = e.shiftKey ? GENERATOR_BOX : SELECTOR_BOX;
-	grabbed.start(e);
 }
 
 function cancel() {
@@ -203,15 +182,27 @@ window.onload = function() {
 	// document.getElementById('start-button').click();
 }
 
-window.onmouseup = release;
-window.onmousemove = move;
-window.onmousedown = startSelectorBox;
+window.onmousemove = function(e) {
+	grabbed.move(e);
+};
+
+window.onmousedown = function(e) {
+	// TODO: multiple selection boxes
+	deselectAll();
+	grabbed = e.shiftKey ? GENERATOR_BOX : SELECTOR_BOX;
+	grabbed.start(e);
+};
+
+window.onmouseup = function(e) {
+	grabbed.stop(e);
+	grabbed = DEFAULT_GRAB;
+};
 
 window.onbeforeunload = function() {
 	if (revealed.size) {
 		// return 'The current board will be lost.';
 	}
-}
+};
 
 // SELECTORS
 
@@ -258,5 +249,3 @@ function saveSession() {
 		ownedPromos: Array.from(ownedPromos)
 	}));
 }
-
-const CARD_TYPES = ['Action', 'Treasure', 'Victory', 'Attack', 'Duration', 'Reaction', 'Looter', 'Knight', 'Reserve', 'Traveller', 'Gathering', 'Castle', 'Night', 'Fate', 'Doom'];

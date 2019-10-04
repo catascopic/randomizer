@@ -6,6 +6,6 @@ function Grabbable() {
 	this.replace = nop;
 	this.remove = nop;
 	this.sendToBack = nop;
-};
+}
 
-function nop() {};
+function nop() {}

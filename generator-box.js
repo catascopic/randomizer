@@ -23,10 +23,10 @@ function GeneratorBox(node) {
 		let y = bound(e.clientY, 0, screenHeight - TILE_HEIGHT + 1);
 		
 		countAcross = getCount(x, gridFunc(anchorX), TILE_WIDTH);
-		countDown = getCount(y, gridFunc(anchorY), TILE_HEIGHT);
+		countDown   = getCount(y, gridFunc(anchorY), TILE_HEIGHT);
 
-		node.style.width = `${countAcross * TILE_WIDTH}px`;
-		node.style.height = `${countDown * TILE_HEIGHT}px`;
+		node.style.width =  `${countAcross * TILE_WIDTH }px`;
+		node.style.height = `${countDown   * TILE_HEIGHT}px`;
 		node.style.transform = `translate(${gridFunc(Math.min(x, anchorX))}px, ${gridFunc(Math.min(y, anchorY))}px)`;
 		node.innerText = countAcross * countDown;
 	};
@@ -37,7 +37,7 @@ function GeneratorBox(node) {
 				Math.min(bound(e.clientX, 0, screenWidth  - TILE_WIDTH),  anchorX), 
 				Math.min(bound(e.clientY, 0, screenHeight - TILE_HEIGHT), anchorY), 
 				countDown, countAcross * countDown, true);
-	}
+	};
 	
 	this.cancel = function() {
 		node.classList.add('hide');

@@ -19,4 +19,4 @@ function Selection() {
 	};
 }
 
-Selection.prototype = Object.create(DefaultGrab.prototype);
+Selection.prototype = new DefaultGrab();
