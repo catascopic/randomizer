@@ -25,7 +25,7 @@
 </head>
 <body>
 
-	<div class="modal" id="modal" onclick="start()">
+	<div class="modal" id="modal" onclick="start()" onmousedown="event.stopPropagation()">
 		<div class="panel" id="panel">
 			<div class="selectors" id="selectors"></div>
 			<div class="save-button" id="start-button" onclick="start()">Start</div>

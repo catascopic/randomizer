@@ -10,7 +10,7 @@ function Deck(contents) {
 	this.draw = function(e) {
 		deselectAll();
 		if (contents.length) {
-			grab(e, new Tile(contents.pop()));
+			grab(e, drawTile(contents.pop()));
 			updateTotal();
 		}
 	};
@@ -33,7 +33,7 @@ function Deck(contents) {
 			popped.sort((a, b) => a.cost - b.cost);
 		}
 		for (let i = 0; i < total; i++) {
-			new Tile(popped[i]).setPosition(x + Math.floor(i / rows) * TILE_HEIGHT, y + (i % rows) * TILE_WIDTH);
+			generateTile(popped[i], x + Math.floor(i / rows) * TILE_HEIGHT, y + (i % rows) * TILE_WIDTH);
 		}
 		updateTotal();
 	};
@@ -48,17 +48,5 @@ function Deck(contents) {
 		shuffle(contents);
 		deckNameNode.animate(frames, { duration: 500, iterations: 1 });
 	};
-	
-	// drawSearch: function(result) {
-		// grab(result.e, new Tile(contents.splice(contents.findIndex(c => c.name == result.name), 1)[0]));
-		// updateTotal();
-	// },
-	
-	// cheat: function(cardName) {
-		// let index = contents.findIndex(c => c.name == cardName);
-		// if (index == -1) {
-			// throw 'not found';
-		// }
-		// swap(contents, index, contents.length - 1);
-	// };
+
 }
