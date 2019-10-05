@@ -179,7 +179,7 @@ window.onload = function() {
 	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
 	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
 	SEARCH_DIALOG = newSearchDialog();
-	// document.getElementById('start-button').click();
+	start();
 }
 
 window.onmousemove = function(e) {

@@ -1,16 +1,22 @@
 function GeneratorBox(node) {
 
+	let startX;
+	let startY;
 	let anchorX;
 	let anchorY;
 	let countAcross;
 	let countDown;
-	let startY;
-	let startX;
 	
-	function getCount(pos, start, dim) {
-		return Math.max(Math.ceil(Math.abs(pos - start) / dim), 1);
+	function getCount(pos, start, min, max, dim, log) {
+		let boundPos = bound(pos, min, max);
+		let distance = Math.abs(pos - start);
+		let unitDistance = Math.ceil(distance / dim);
+		let cap = Math.max(unitDistance, 1);
+		if (log) console.log(start, pos, distance, unitDistance, cap);
+		
+		return cap;
 	}
-	
+
 	this.start = function(e) {
 		measureScreen();
 		node.style.zIndex = topZIndex;
@@ -21,14 +27,34 @@ function GeneratorBox(node) {
 	};
 	
 	this.move = function(e) {
-		let x = bound(e.clientX, 0, screenWidth  - TILE_WIDTH);
-		let y = bound(e.clientY, 0, screenHeight - TILE_HEIGHT);
-		
-		countAcross = getCount(x, gridFunc(anchorX), TILE_WIDTH);
-		countDown = getCount(y, gridFunc(anchorY), TILE_HEIGHT);
+		let minX;
+		let maxX;
+		let minY;
+		let maxY;
 
-		startX = gridFunc(anchorX);
-		startY = gridFunc(anchorY);
+		if (e.clientX >= anchorX) {
+			minX = 0;
+			maxX = screenWidth - TILE_WIDTH;
+		} else {
+			minX = TILE_WIDTH;
+			maxX = screenWidth;
+		}
+		if (e.clientY >= anchorY) {
+			minY = 0;
+			maxY = screenHeight - TILE_HEIGHT;
+		} else {
+			minY = TILE_HEIGHT;
+			maxY = screenHeight;
+		}
+		
+		startX = bound(gridFunc(anchorX), minX, maxX);
+		startY = bound(gridFunc(anchorY), minY, maxY);
+		
+		let maxTileHoriz = Math.floor(Math.abs(startX - (e.clientX >= anchorX ? screenWidth  : 0)) / TILE_WIDTH);
+		let maxTileVert  = Math.floor(Math.abs(startY - (e.clientY >= anchorY ? screenHeight : 0)) / TILE_HEIGHT);
+		
+		countAcross = Math.min(Math.ceil(Math.abs(startX - e.clientX) / TILE_WIDTH), maxTileHoriz);
+		countDown   = Math.min(Math.ceil(Math.abs(startY - e.clientY) / TILE_HEIGHT), maxTileVert);;
 
 		if (e.clientX < anchorX) {
 			startX -= countAcross * TILE_WIDTH;

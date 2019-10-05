@@ -3,14 +3,14 @@ function loadTile(savedTile) {
 }
 
 function drawTile(card) {
-	return new Tile(card, undefined, undefined, 0);
+	return new Tile(card, 0, 0, 0);
 }
 
 function generateTile(card, x, y) {
 	return new Tile(card, x, y, topZIndex++);
 }
 
-function Tile(initCard, initX = 0, initY = 0, initZ) {
+function Tile(initCard, initX, initY, initZ) {
 	
 	let card = initCard;
 	
@@ -38,9 +38,9 @@ function Tile(initCard, initX = 0, initY = 0, initZ) {
 	
 	let x = initX;
 	let y = initY;
+	let z = initZ;
 	let offsetX;
 	let offsetY;
-	let z = initZ !== undefined ? initZ : topZIndex++;
 	
 	this.start = function(e) {
 		offsetX = e.clientX - x;
