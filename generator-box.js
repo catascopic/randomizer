@@ -7,14 +7,12 @@ function GeneratorBox(node) {
 	let countAcross;
 	let countDown;
 	
-	function getCount(pos, start, min, max, dim, log) {
-		let boundPos = bound(pos, min, max);
-		let distance = Math.abs(pos - start);
-		let unitDistance = Math.ceil(distance / dim);
-		let cap = Math.max(unitDistance, 1);
-		if (log) console.log(start, pos, distance, unitDistance, cap);
-		
-		return cap;
+	function tileCount(start, pos, tileDim, anchor, screenDim, tileDim) {
+		return Math.max(
+			Math.min(
+				Math.ceil(Math.abs(start - pos) / tileDim), 
+				Math.floor(Math.abs(start - (pos >= anchor ? screenDim  : 0)) / tileDim)
+			), 1);
 	}
 
 	this.start = function(e) {
@@ -31,6 +29,7 @@ function GeneratorBox(node) {
 		let maxX;
 		let minY;
 		let maxY;
+		let startXOffset;
 
 		if (e.clientX >= anchorX) {
 			minX = 0;
@@ -50,11 +49,8 @@ function GeneratorBox(node) {
 		startX = bound(gridFunc(anchorX), minX, maxX);
 		startY = bound(gridFunc(anchorY), minY, maxY);
 		
-		let maxTileHoriz = Math.floor(Math.abs(startX - (e.clientX >= anchorX ? screenWidth  : 0)) / TILE_WIDTH);
-		let maxTileVert  = Math.floor(Math.abs(startY - (e.clientY >= anchorY ? screenHeight : 0)) / TILE_HEIGHT);
-		
-		countAcross = Math.min(Math.ceil(Math.abs(startX - e.clientX) / TILE_WIDTH), maxTileHoriz);
-		countDown   = Math.min(Math.ceil(Math.abs(startY - e.clientY) / TILE_HEIGHT), maxTileVert);;
+		countAcross = tileCount(startX, e.clientX, TILE_WIDTH,  anchorX, screenWidth,  TILE_WIDTH);
+		countDown   = tileCount(startY, e.clientY, TILE_HEIGHT, anchorY, screenHeight, TILE_HEIGHT);
 
 		if (e.clientX < anchorX) {
 			startX -= countAcross * TILE_WIDTH;
