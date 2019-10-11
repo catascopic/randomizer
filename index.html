@@ -25,7 +25,7 @@
 </head>
 <body>
 
-	<div class="modal" id="modal" onclick="start()" onmousedown="event.stopPropagation()">
+	<div class="modal hide" id="modal" onclick="hideModal()" onmousedown="event.stopPropagation()">
 		<div class="panel" id="panel">
 			<div class="selectors" id="selectors"></div>
 			<div class="save-button" id="start-button" onclick="start()">Start</div>
@@ -35,14 +35,6 @@
 	<div class="serch-modal hide" id="search-modal">
 		<div class="search-grid" id="search-grid">
 			
-		</div>
-	</div>
-	
-	<div class="text-modal hide" id="text-modal">
-		<div class="text-box" id="text-box">
-			<div class="text-box-name" id="text-box-name"></div>
-			<div class="text-box-text" id="text-box-text"></div>
-			<div class="text-box-types" id="text-box-types"></div>
 		</div>
 	</div>
 

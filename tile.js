@@ -128,6 +128,11 @@ function Tile(initCard, initX, initY, initZ) {
 			y: y,
 			z: z
 		};
+	};
+	
+	// I don't like getters
+	this.getZ = function() {
+		return z;
 	}
 	
 	function display() {

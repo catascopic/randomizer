@@ -1,7 +1,9 @@
 function Selection() {
 	
 	this.start = function(e) {
-		for (let tile of selected) {
+		let inOrder = [...selected];
+		inOrder.sort((t1, t2) => t1.getZ() - t2.getZ());
+		for (let tile of inOrder) {
 			tile.start(e);
 		}
 	};

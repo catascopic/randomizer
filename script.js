@@ -30,6 +30,8 @@ var ownedCards;
 var ownedSets = new Set();
 var ownedPromos = new Set();
 
+var modal = null;
+
 function noGrid(n) {
 	return n;
 }
@@ -57,7 +59,7 @@ function measureScreen() {
 
 function shortcut(e) {
 	switch (e.key) {
-		
+
 		case 'a': selectAll(); break;
 		case 'Delete': 
 		case 'd': grabbed.remove(); break;
@@ -65,18 +67,18 @@ function shortcut(e) {
 		case 'o': organize(); break;
 		case 'q': search(); break;
 		case 'r': grabbed.replace(); break;
-		case 's': 
-		case 'm': deck.shuffle(); break;
+		case 's': deck.shuffle(); break;
+		case 't': displayText(); break;
 		case 'z': grabbed.sendToBack(); break;
-		
+
 		case 'Escape': cancel(); break;
 		case 'backspace': /* stop back button */ break;
-		
+
 		case 'ArrowUp':    shiftSelected( 0, -1); break;
 		case 'ArrowDown':  shiftSelected( 0,  1); break;
 		case 'ArrowLeft':  shiftSelected(-1,  0); break;
 		case 'ArrowRight': shiftSelected( 1,  0); break;
-		
+
 		default: return;
 	}
 	e.preventDefault();
@@ -117,6 +119,7 @@ function drawCard(e) {
 }
 
 function cancel() {
+	hideModal();
 	grabbed.cancel();
 	deselectAll();
 }
@@ -132,6 +135,25 @@ function deselectAll() {
 function clearSelected() {
 	selected.clear();
 	document.body.classList.remove(ANY_SELECTED);
+}
+
+async function displayText() {
+	let tiles = selected.size ? selected : revealed;
+	await navigator.clipboard.writeText([...tiles].map(t => t.getName()).join('\n'));
+}
+
+function showModal(name) {
+	hideModal();
+	modal = document.getElementById(name);
+	show(modal);
+	show(modal.parentNode);
+}
+
+function hideModal() {
+	if (modal) {
+		hide(modal);
+		hide(modal.parentNode);
+	}
 }
 
 function shiftSelected(deltaX, deltaY) {
@@ -161,7 +183,7 @@ function start() {
 	shuffle(ownedCards);
 	// ownedCards.sort((a, b) => a.text.length - b.text.length);
 	saveSession();
-	hide(document.getElementById('modal'));
+	hide(document.getElementById('panel'));
 	deck = new Deck(ownedCards);
 }
 
