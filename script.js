@@ -181,7 +181,6 @@ function start() {
 		}
 	}
 	shuffle(ownedCards);
-	// ownedCards.sort((a, b) => a.text.length - b.text.length);
 	saveSession();
 	hide(document.getElementById('panel'));
 	deck = new Deck(ownedCards);
@@ -201,7 +200,7 @@ window.onload = function() {
 	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
 	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
 	SEARCH_DIALOG = newSearchDialog();
-	start();
+	showModal('panel');
 }
 
 window.onmousemove = function(e) {
