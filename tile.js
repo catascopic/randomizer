@@ -78,9 +78,9 @@ function Tile(initCard, initX, initY, initZ) {
 		tileNode.style.zIndex = z;
 	};
 	
-	this.replace = function() {
+	this.replace = function(reverse) {
 		tileNode.classList.remove(...card.types);
-		card = deck.replace(card);
+		card = reverse ? deck.replaceBottom(card) : deck.replace(card);
 		initialize();
 	};
 	

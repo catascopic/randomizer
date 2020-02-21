@@ -24,6 +24,11 @@ function Deck(contents) {
 		contents.unshift(card);
 		return contents.pop();
 	};
+	
+	this.replaceBottom = function(card) {
+		contents.push(card);
+		return contents.shift();
+	};
 
 	this.placeGroup = function(x, y, rows, count, sort) {
 		let total = Math.min(count, contents.length);

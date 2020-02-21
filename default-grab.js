@@ -15,9 +15,9 @@ function DefaultGrab() {
 		clearSelected();
 	};
 	
-	this.replace = function() {
+	this.replace = function(reverse) {
 		for (let tile of selected) {
-			tile.replace();
+			tile.replace(reverse);
 		}
 	};
 

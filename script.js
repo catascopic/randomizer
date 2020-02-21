@@ -58,26 +58,26 @@ function measureScreen() {
 }
 
 function shortcut(e) {
-	switch (e.key) {
+	switch (e.key.toLowerCase()) {
 
 		case 'a': selectAll(); break;
-		case 'Delete': 
+		case 'delete': 
 		case 'd': grabbed.remove(); break;
 		case 'g': toggleGrid(); break;
 		case 'o': organize(); break;
 		case 'q': search(); break;
-		case 'r': grabbed.replace(); break;
+		case 'r': grabbed.replace(e.shiftKey); break;
 		case 's': deck.shuffle(); break;
 		case 't': displayText(); break;
 		case 'z': grabbed.sendToBack(); break;
 
-		case 'Escape': cancel(); break;
+		case 'escape': cancel(); break;
 		case 'backspace': /* stop back button */ break;
 
-		case 'ArrowUp':    shiftSelected( 0, -1); break;
-		case 'ArrowDown':  shiftSelected( 0,  1); break;
-		case 'ArrowLeft':  shiftSelected(-1,  0); break;
-		case 'ArrowRight': shiftSelected( 1,  0); break;
+		case 'arrowup':    shiftSelected( 0, -1); break;
+		case 'arrowdown':  shiftSelected( 0,  1); break;
+		case 'arrowleft':  shiftSelected(-1,  0); break;
+		case 'arrowright': shiftSelected( 1,  0); break;
 
 		default: return;
 	}
