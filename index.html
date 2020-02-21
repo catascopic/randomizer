@@ -25,18 +25,18 @@
 </head>
 <body>
 
-	<div class="modal hide" id="modal" onclick="hideModal()" onmousedown="event.stopPropagation()">
-		<div class="panel" id="panel">
+	<div class="start-cover" id="start" onclick="start()" onmousedown="event.stopPropagation()">
+		<div class="start-panel" id="panel">
 			<div class="selectors" id="selectors"></div>
 			<div class="save-button" id="start-button" onclick="start()">Start</div>
 		</div>
 	</div>
 	
-	<div class="serch-modal hide" id="search-modal">
-		<div class="search-grid" id="search-grid">
+	<!-- <div class="serch-modal hide" id="search-modal"> -->
+		<!-- <div class="search-grid" id="search-grid"> -->
 			
-		</div>
-	</div>
+		<!-- </div> -->
+	<!-- </div> -->
 
 	<div class="deck" onmousedown="drawCard(event)" ondragstart="event.preventDefault()">
 		<div class="deckName" id="deckName">Deck</div>

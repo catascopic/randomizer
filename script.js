@@ -119,7 +119,6 @@ function drawCard(e) {
 }
 
 function cancel() {
-	hideModal();
 	grabbed.cancel();
 	deselectAll();
 }
@@ -140,20 +139,6 @@ function clearSelected() {
 async function displayText() {
 	let tiles = selected.size ? selected : revealed;
 	await navigator.clipboard.writeText([...tiles].map(t => t.getName()).join('\n'));
-}
-
-function showModal(name) {
-	hideModal();
-	modal = document.getElementById(name);
-	show(modal);
-	show(modal.parentNode);
-}
-
-function hideModal() {
-	if (modal) {
-		hide(modal);
-		hide(modal.parentNode);
-	}
 }
 
 function shiftSelected(deltaX, deltaY) {
@@ -182,7 +167,7 @@ function start() {
 	}
 	shuffle(ownedCards);
 	saveSession();
-	hide(document.getElementById('panel'));
+	hide(document.getElementById('start'));
 	deck = new Deck(ownedCards);
 }
 
@@ -200,7 +185,6 @@ window.onload = function() {
 	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
 	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
 	SEARCH_DIALOG = newSearchDialog();
-	showModal('panel');
 }
 
 window.onmousemove = function(e) {
