@@ -10,7 +10,7 @@ function Deck(contents) {
 	this.draw = function(e) {
 		deselectAll();
 		if (contents.length) {
-			grab(e, drawTile(contents.pop()));
+			grab(e, drawTile(e.shiftKey ? contents.shift() : contents.pop()));
 			updateTotal();
 		}
 	};
