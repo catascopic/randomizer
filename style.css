@@ -36,7 +36,7 @@ html, body {
 }
 
 .deck {
-	background-color: rgba(0, 0, 0, .1);
+	background-color: gainsboro;
 	font-family: 'Fira Sans';
 	font-size: 16px;
 	display: flex;
@@ -113,11 +113,11 @@ html, body {
 */
 
 .any-selected {
-	background-image: linear-gradient(white, #C0C0FF);
+	background-color: #B9D3EE;
 }
 
 .any-selected.grid {
-	background-image: url("grid.svg"), linear-gradient(white, #C0C0FF);
+	background-image: url("grid-selected.svg");
 }
 
 .any-selected > .card:not(.card-selected) {
