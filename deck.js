@@ -54,4 +54,8 @@ function Deck(contents) {
 		deckNameNode.animate(frames, { duration: 500, iterations: 1 });
 	};
 
+	this.save = function() {
+		return contents.map(card => card.name);
+	};
+
 }

@@ -1,5 +1,5 @@
 function loadTile(savedTile) {
-	return new Tile(savedTile.card, savedTile.x, savedTile.y, savedTile.z);
+	return new Tile(cardLookup[savedTile.name], savedTile.x, savedTile.y, savedTile.z);
 }
 
 function drawTile(card) {
@@ -97,6 +97,10 @@ function Tile(initCard, initX, initY, initZ) {
 		deck.putOnBottom(card);
 		tileNode.remove();
 	};
+	
+	this.clear = function() {
+		tileNode.remove();
+	};
 
 	this.checkOverlap = function(boxX, boxY, boxWidth, boxHeight) {
 		this.select((between(x, boxX, boxX + boxWidth)  || between(boxX, x, x + TILE_WIDTH))
@@ -123,13 +127,13 @@ function Tile(initCard, initX, initY, initZ) {
 	
 	this.save = function() {
 		return {
-			card: card.name,
+			name: card.name,
 			x: x,
 			y: y,
 			z: z
 		};
 	};
-	
+
 	// I don't like getters
 	this.getZ = function() {
 		return z;

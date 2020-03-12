@@ -31,6 +31,7 @@ var ownedSets = new Set();
 var ownedPromos = new Set();
 
 var modal = null;
+var cardLookup = {};
 
 function noGrid(n) {
 	return n;
@@ -40,10 +41,10 @@ function snapToGrid(n) {
 	return nearestMultiple(n, GRID_SIZE);
 }
 
-function grab(e, target) {
-	e.stopPropagation();
+function grab(event, target) {
+	event.stopPropagation();
 	grabbed = target;
-	grabbed.start(e);
+	grabbed.start(event);
 	measureScreen();
 }
 
@@ -57,17 +58,20 @@ function measureScreen() {
 	}
 }
 
-function shortcut(e) {
-	switch (e.key.toLowerCase()) {
+function shortcut(event) {
+	switch (event.key.toLowerCase()) {
 
 		case 'a': selectAll(); break;
-		case 'delete': 
+		case 'delete':
 		case 'd': grabbed.remove(); break;
 		case 'g': toggleGrid(); break;
+		case 'l': promptLoad(); break;
+		case 'm': deck.shuffle(); break;
+		case 'n': startSession(); break;
 		case 'o': organize(); break;
 		case 'q': search(); break;
-		case 'r': grabbed.replace(e.shiftKey); break;
-		case 's': deck.shuffle(); break;
+		case 'r': grabbed.replace(event.shiftKey); break;
+		case 's': promptSave(); break;
 		case 't': displayText(); break;
 		case 'z': grabbed.sendToBack(); break;
 
@@ -81,7 +85,7 @@ function shortcut(e) {
 
 		default: return;
 	}
-	e.preventDefault();
+	event.preventDefault();
 }
 
 function toggleGrid() {
@@ -113,9 +117,9 @@ function updateAnySelected() {
 	document.body.classList.toggle(ANY_SELECTED, selected.size);
 }
 
-function drawCard(e) {
+function drawCard(event) {
 	grabbed.stop();
-	deck.draw(e);
+	deck.draw(event);
 }
 
 function cancel() {
@@ -150,10 +154,42 @@ function shiftSelected(deltaX, deltaY) {
 	}
 }
 
-function start() {
-	if (!ownedSets.size) {
-		return;
+function loadState(state) {
+	deck = new Deck(state.deck.map(name => cardLookup[name]));
+	for (let card of state.cards) {
+		loadTile(card);
 	}
+}
+
+function getState() {
+	return {
+		cards: Array.from(revealed).map(tile => tile.save()),
+		deck: deck.save(),
+		date: Date.now()
+	};
+}
+
+function startSession() {
+	show(document.getElementById('start'));
+	updateStartButton();
+}
+
+function defaultStart() {
+	if (!revealed.size) {
+		if (ownedSets.size) {
+			start();
+		}
+	} else {
+		hide(document.getElementById('start'));
+	}
+}
+
+function start() {
+	for (let tile of revealed) {
+		tile.clear();
+	}
+	revealed.clear();
+	
 	ownedCards = [];
 	for (let set of sets) {
 		if (ownedSets.has(set.name)) {
@@ -166,7 +202,7 @@ function start() {
 		}
 	}
 	shuffle(ownedCards);
-	saveSession();
+	saveSettings();
 	hide(document.getElementById('start'));
 	deck = new Deck(ownedCards);
 }
@@ -174,18 +210,37 @@ function start() {
 function init(json) {
 	sets = json.sets;
 	promos = json.promos;
+	for (let set of sets) {
+		for (let card of set.cards) {
+			cardLookup[card.name] = card;
+		}
+	}
+	for (let promo of promos) {
+		cardLookup[promo.name] = promo;
+	}
 }
 
 window.onload = function() {
-	loadSession();
 	measureScreen();
-	updateStartButton();
+	let tempJson = localStorage.getItem('temp');
+	loadSettings();
+	if (tempJson == null) {
+		startSession();
+	} else {
+		loadState(JSON.parse(tempJson));
+	}
 	createSelectors(1, ownedSets,   sets,   'set');
 	createSelectors(2, ownedPromos, promos, 'promo');
 	SELECTOR_BOX = new SelectorBox(document.getElementById('selector-box'));
 	GENERATOR_BOX = new GeneratorBox(document.getElementById('generator-box'));
-	SEARCH_DIALOG = newSearchDialog();
+	// SEARCH_DIALOG = newSearchDialog();
 }
+
+window.onbeforeunload = function() {
+	if (revealed.size) {
+		localStorage.setItem('temp', JSON.stringify(getState()));
+	}
+};
 
 window.onmousemove = function(e) {
 	grabbed.move(e);
@@ -201,12 +256,6 @@ window.onmousedown = function(e) {
 window.onmouseup = function(e) {
 	grabbed.stop(e);
 	grabbed = DEFAULT_GRAB;
-};
-
-window.onbeforeunload = function() {
-	if (revealed.size) {
-		// return 'The current board will be lost.';
-	}
 };
 
 // SELECTORS
@@ -239,17 +288,17 @@ function createSelectors(col, selectorSet, items, className) {
 	}
 }
 
-function loadSession() {
-	let sessionJson = localStorage.getItem('session');
-	if (sessionJson != null) {
-		let session = JSON.parse(sessionJson);
-		ownedSets = new Set(session.ownedSets);
-		ownedPromos = new Set(session.ownedPromos);
+function loadSettings() {
+	let settingsJson = localStorage.getItem('settings');
+	if (settingsJson != null) {
+		let settings = JSON.parse(settingsJson);
+		ownedSets = new Set(settings.ownedSets);
+		ownedPromos = new Set(settings.ownedPromos);
 	}
 }
 
-function saveSession() {
-	localStorage.setItem('session', JSON.stringify({
+function saveSettings() {
+	localStorage.setItem('settings', JSON.stringify({
 		ownedSets: Array.from(ownedSets),
 		ownedPromos: Array.from(ownedPromos)
 	}));

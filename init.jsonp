@@ -730,7 +730,7 @@ init({
             "Action"
           ],
           "set": "Seaside",
-          "text": "+{$2}\nTrash this. Add an Embargo token to a Supply pile. (For the rest of the game, when a player buys a card from that pile, they gain a Curse.)"
+          "text": "+{$2}\nTrash this. If you did, add an Embargo token to a Supply pile. (For the rest of the game, when a player buys a card from that pile, they gain a Curse.)"
         },
         {
           "name": "Outpost",
@@ -1605,7 +1605,7 @@ init({
             "Action"
           ],
           "set": "Dark Ages",
-          "text": "You may play an action card from your hand twice. Trash it. Gain an Action card costing exactly {$1} more than it."
+          "text": "You may play a non-Duration Action card from your hand twice. Trash it. Gain an Action card costing exactly {$1} more than it."
         },
         {
           "name": "Squire",
@@ -1643,7 +1643,7 @@ init({
             "Looter"
           ],
           "set": "Dark Ages",
-          "text": "+{$5}\nYou may trash an Action card from your hand. If you don't, trash this.\n---\nWhen you gain this, gain 2 Ruins."
+          "text": "+{$5}\nYou may trash this or an Action card from your hand, for +$5.\n---\nWhen you gain this, gain 2 Ruins."
         },
         {
           "name": "Wandering Minstrel",
@@ -1680,7 +1680,7 @@ init({
             "Attack"
           ],
           "set": "Dark Ages",
-          "text": "Trash this. Each other player with 5 or more cards in hand reveals their hand and discards a card that you choose. Gain 2 Spoils from the Spoils pile."
+          "text": "Trash this. If you did, gain 2 Spoils, and each other player with 5 or more cards in hand reveals their hand and discards a card that you choose."
         },
         {
           "name": "Mystic",
@@ -1763,10 +1763,11 @@ init({
           "name": "Band of Misfits",
           "cost": 5,
           "types": [
-            "Action"
+            "Action",
+			"Command"
           ],
           "set": "Dark Ages",
-          "text": "Play this as if it were a cheaper Action card in the Supply. This is that card until it leaves play."
+          "text": "Play a non-Command Action card from the Supply that costs less than this, leaving it there."
         },
         {
           "name": "Junk Dealer",
@@ -2259,10 +2260,11 @@ init({
           "name": "Overlord",
           "debt": 8,
           "types": [
-            "Action"
+            "Action",
+			"Command"
           ],
           "set": "Empires",
-          "text": "Play this as if it were an Action card in the Supply costing up to {$5}. This is that card until it leaves play."
+          "text": "Play a non-Command Action card from the Supply costing up to {$5}, leaving it there."
         },
         {
           "name": "Royal Blacksmith",
@@ -3067,6 +3069,27 @@ init({
       ],
       "set": "Promo",
       "text": "Trash a card from your hand. If it costs {$1} or more, gain a cheaper card and a Gold."
+    },
+	{
+      "name": "Church",
+      "cost": 3,
+      "types": [
+        "Action",
+		"Duration"
+      ],
+      "set": "Promo",
+      "text": "+1 Action\nSet aside up to 3 cards from your hand face down. At the start of your next turn, put them into your hand, then you may trash a card from your hand."
+    },
+	{
+      "name": "Captain",
+      "cost": 6,
+      "types": [
+        "Action",
+		"Duration",
+		"Command"
+      ],
+      "set": "Promo",
+      "text": "Now and at the start of your next turn: Play a non-Duration, non-Command Action card from the Supply costing up to {$4}, leaving it there."
     }
   ]
 });
