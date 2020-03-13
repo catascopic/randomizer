@@ -44,7 +44,7 @@ function snapToGrid(n) {
 function grab(event, target) {
 	event.stopPropagation();
 	grabbed = target;
-	grabbed.start(event);
+	grabbed.start(event.clientX, event.clientY);
 	measureScreen();
 }
 
@@ -70,7 +70,7 @@ function shortcut(event) {
 		case 'n': startSession(); break;
 		case 'o': organize(); break;
 		case 'q': search(); break;
-		case 'r': grabbed.replace(event.shiftKey); break;
+		case 'r': grabbed.replace(); break;
 		case 's': promptSave(); break;
 		case 't': displayText(); break;
 		case 'z': grabbed.sendToBack(); break;
@@ -242,19 +242,19 @@ window.onbeforeunload = function() {
 	}
 };
 
-window.onmousemove = function(e) {
-	grabbed.move(e);
+window.onmousemove = function(event) {
+	grabbed.move(event.clientX, event.clientY);
 };
 
-window.onmousedown = function(e) {
+window.onmousedown = function(event) {
 	// TODO: multiple selection boxes
 	deselectAll();
-	grabbed = e.shiftKey ? GENERATOR_BOX : SELECTOR_BOX;
-	grabbed.start(e);
+	grabbed = event.shiftKey ? GENERATOR_BOX : SELECTOR_BOX;
+	grabbed.start(event.clientX, event.clientY);
 };
 
-window.onmouseup = function(e) {
-	grabbed.stop(e);
+window.onmouseup = function(event) {
+	grabbed.stop(event.clientX, event.clientY);
 	grabbed = DEFAULT_GRAB;
 };
 
@@ -275,14 +275,14 @@ function createSelectors(col, selectorSet, items, className) {
 		if (selectorSet.has(item.name)) {
 			node.classList.add('selected');
 		}
-		node.onclick = function(e) {
+		node.onclick = function(event) {
 			let selected = !selectorSet.delete(item.name);
 			if (selected) {
 				selectorSet.add(item.name);
 			}
 			node.classList.toggle('selected', selected);
 			updateStartButton();
-			e.stopPropagation();
+			event.stopPropagation();
 		};
 		document.getElementById('selectors').appendChild(node);
 	}

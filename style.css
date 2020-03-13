@@ -186,7 +186,7 @@ hr {
 
 .start-panel {
 	margin-top: 24px;
-	width: 400px;
+	width: 320px;
 	display: grid;
 	grid-gap: 6px;
 	position: absolute;
@@ -204,23 +204,21 @@ hr {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 28px;
 	cursor: pointer;
 	border-radius: 6px;
 	border-width: 3px;
 	border-style: solid;
+	font-size: 18px;
 }
 
 .set.selector {
 	border-color: var(--set-color);
 	color: var(--set-color);
-	font-size: 20px;
 }
 
 .promo.selector {
 	border-color: var(--promo-color);
 	color: var(--promo-color);
-	font-size: 18px;
 }
 
 .selector.selected {

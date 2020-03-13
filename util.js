@@ -9,8 +9,8 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-function noDrag(e) {
-	e.preventDefault();
+function noDrag(event) {
+	event.preventDefault();
 }
 
 function toggle(set, item, state) {
@@ -25,8 +25,8 @@ function setsEqual(set1, set2) {
     if (set1.size !== set2.size) {
 		return false;
 	}
-    for (let e of set1) {
-		if (!set2.has(e)) {
+    for (let element of set1) {
+		if (!set2.has(element)) {
 			return false;
 		}
 	}

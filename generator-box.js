@@ -15,30 +15,30 @@ function GeneratorBox(node) {
 			), 1);
 	}
 
-	this.start = function(e) {
+	this.start = function(x, y) {
 		measureScreen();
 		node.style.zIndex = topZIndex;
-		anchorX = e.clientX;
-		anchorY = e.clientY;
-		this.move(e);
+		anchorX = x;
+		anchorY = y;
+		this.move(x, y);
 		show(node);
 	};
-	
-	this.move = function(e) {
+
+	this.move = function(x, y) {
 		let minX;
 		let maxX;
 		let minY;
 		let maxY;
 		let startXOffset;
 
-		if (e.clientX >= anchorX) {
+		if (x >= anchorX) {
 			minX = 0;
 			maxX = screenWidth - TILE_WIDTH;
 		} else {
 			minX = TILE_WIDTH;
 			maxX = screenWidth;
 		}
-		if (e.clientY >= anchorY) {
+		if (y >= anchorY) {
 			minY = 0;
 			maxY = screenHeight - TILE_HEIGHT;
 		} else {
@@ -49,13 +49,13 @@ function GeneratorBox(node) {
 		startX = bound(gridFunc(anchorX), minX, maxX);
 		startY = bound(gridFunc(anchorY), minY, maxY);
 		
-		countAcross = tileCount(startX, e.clientX, TILE_WIDTH,  anchorX, screenWidth,  TILE_WIDTH);
-		countDown   = tileCount(startY, e.clientY, TILE_HEIGHT, anchorY, screenHeight, TILE_HEIGHT);
+		countAcross = tileCount(startX, x, TILE_WIDTH,  anchorX, screenWidth,  TILE_WIDTH);
+		countDown   = tileCount(startY, y, TILE_HEIGHT, anchorY, screenHeight, TILE_HEIGHT);
 
-		if (e.clientX < anchorX) {
+		if (x < anchorX) {
 			startX -= countAcross * TILE_WIDTH;
 		}
-		if (e.clientY < anchorY) {
+		if (y < anchorY) {
 			startY -= countDown * TILE_HEIGHT;
 		}
 
@@ -65,7 +65,7 @@ function GeneratorBox(node) {
 		node.innerText = countAcross * countDown;
 	};
 
-	this.stop = function(e) {
+	this.stop = function() {
 		hide(node);
 		deck.placeGroup(startX, startY, countDown, countAcross * countDown, true);
 	};

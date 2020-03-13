@@ -36,32 +36,32 @@ function Tile(initCard, initX, initY, initZ) {
 
 	initialize();
 	
-	let x = initX;
-	let y = initY;
-	let z = initZ;
+	let posX = initX;
+	let posY = initY;
+	let zIndex = initZ;
 	let offsetX;
 	let offsetY;
 	
-	this.start = function(e) {
-		offsetX = e.clientX - x;
-		offsetY = e.clientY - y;
-		z = topZIndex++;
-		tileNode.style.zIndex = z;
+	this.start = function(x, y) {
+		offsetX = x - posX;
+		offsetY = y - posY;
+		zIndex = topZIndex++;
+		tileNode.style.zIndex = zIndex;
 	};
 
-	this.move = function(e) {
-		this.setPosition(e.clientX - offsetX, e.clientY - offsetY);
+	this.move = function(x, y) {
+		this.setPosition(x - offsetX, y - offsetY);
 	};
 	
-	this.setPosition = function(setX, setY) {
-		x = gridFunc(bound(setX, 0, screenWidth  - TILE_WIDTH));
-		y = gridFunc(bound(setY, 0, screenHeight - TILE_HEIGHT));
+	this.setPosition = function(x, y) {
+		posX = gridFunc(bound(x, 0, screenWidth  - TILE_WIDTH));
+		posY = gridFunc(bound(y, 0, screenHeight - TILE_HEIGHT));
 		display();
 	};
 	
 	this.snap = function() {
-		x = snapToGrid(x);
-		y = snapToGrid(y);
+		posX = snapToGrid(posX);
+		posY = snapToGrid(posY);
 		display();
 	};
 
@@ -74,13 +74,13 @@ function Tile(initCard, initX, initY, initZ) {
 	};
 
 	this.bump = function() {
-		z++;
-		tileNode.style.zIndex = z;
+		zIndex++;
+		tileNode.style.zIndex = zIndex;
 	};
 	
-	this.replace = function(reverse) {
+	this.replace = function() {
 		tileNode.classList.remove(...card.types);
-		card = reverse ? deck.replaceBottom(card) : deck.replace(card);
+		card = deck.replace(card);
 		initialize();
 	};
 	
@@ -89,7 +89,7 @@ function Tile(initCard, initX, initY, initZ) {
 		grabbed = DEFAULT_GRAB;
 	};
 	
-	// unsafe: could still exist as grabbed, callers must ensure this is OK
+	// unsafe: "grabbed" container could still hold a reference to this, callers must ensure this is OK
 	this.removeUnsafe = function() {
 		if (!revealed.delete(this)) {
 			throw 'failed remove';
@@ -103,8 +103,8 @@ function Tile(initCard, initX, initY, initZ) {
 	};
 
 	this.checkOverlap = function(boxX, boxY, boxWidth, boxHeight) {
-		this.select((between(x, boxX, boxX + boxWidth)  || between(boxX, x, x + TILE_WIDTH))
-				&&  (between(y, boxY, boxY + boxHeight) || between(boxY, y, y + TILE_HEIGHT)));
+		this.select((between(posX, boxX, boxX + boxWidth)  || between(boxX, posX, posX + TILE_WIDTH))
+				&&  (between(posY, boxY, boxY + boxHeight) || between(boxY, posY, posY + TILE_HEIGHT)));
 	};
 
 	this.select = function(isSelected) {
@@ -118,7 +118,7 @@ function Tile(initCard, initX, initY, initZ) {
 	};
 	
 	this.shift = function(deltaX, deltaY) {
-		this.setPosition(x + deltaX, y + deltaY);
+		this.setPosition(posX + deltaX, posY + deltaY);
 	};
 	
 	this.getName = function() {
@@ -128,19 +128,26 @@ function Tile(initCard, initX, initY, initZ) {
 	this.save = function() {
 		return {
 			name: card.name,
-			x: x,
-			y: y,
-			z: z
+			x: posX,
+			y: posY,
+			z: zIndex
 		};
 	};
 
 	// I don't like getters
 	this.getZ = function() {
-		return z;
+		return zIndex;
+	}
+	
+	this.updateArea = function(area) {
+		area.minX = Math.min(area.minX, posX);
+		area.minY = Math.min(area.minY, posY);
+		area.maxX = Math.max(area.maxX, posX + TILE_WIDTH);
+		area.maxY = Math.max(area.maxY, posY + TILE_HEIGHT);
 	}
 	
 	function display() {
-		tileNode.style.transform = `translate(${x}px, ${y}px)`;
+		tileNode.style.transform = `translate(${posX}px, ${posY}px)`;
 	}
 	
 	let _this = this;

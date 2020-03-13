@@ -3,16 +3,16 @@ function SelectorBox(node) {
 	let startX;
 	let startY;
 	
-	this.start = function(e) {
+	this.start = function(x, y) {
 		show(node);
 		node.style.zIndex = topZIndex;
-		startX = e.clientX;
-		startY = e.clientY;
+		startX = x;
+		startY = y;
 		this.setPosition(startX, startY);
 	};
 
-	this.move = function(e) {
-		this.setPosition(e.clientX, e.clientY);
+	this.move = function(x, y) {
+		this.setPosition(x, y);
 		document.body.classList.add(ANY_SELECTED);
 	};
 
