@@ -45,8 +45,7 @@ function Tile(initCard, initX, initY, initZ) {
 	this.start = function(x, y) {
 		offsetX = x - posX;
 		offsetY = y - posY;
-		zIndex = topZIndex++;
-		tileNode.style.zIndex = zIndex;
+		setZIndex(topZIndex++);
 	};
 
 	this.move = function(x, y) {
@@ -70,13 +69,17 @@ function Tile(initCard, initX, initY, initZ) {
 			card.bump();
 		}
 		topZIndex++;
-		tileNode.style.zIndex = 0;
+		setZIndex(0);
 	};
 
 	this.bump = function() {
-		zIndex++;
-		tileNode.style.zIndex = zIndex;
+		setZIndex(zIndex + 1);
 	};
+	
+	function setZIndex(z) {
+		zIndex = z;
+		tileNode.style.zIndex = zIndex;
+	}
 	
 	this.replace = function() {
 		tileNode.classList.remove(...card.types);
