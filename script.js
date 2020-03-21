@@ -174,13 +174,17 @@ function startSession() {
 	updateStartButton();
 }
 
-function defaultStart() {
+function promptSave() {
+	show(document.getElementById('save'));
+}
+
+function defaultStart(modal) {
 	if (!revealed.size) {
 		if (ownedSets.size) {
 			start();
 		}
 	} else {
-		hide(document.getElementById('start'));
+		hide(modal);
 	}
 }
 

@@ -25,10 +25,39 @@
 </head>
 <body>
 
-	<div class="start-cover hide" id="start" onclick="defaultStart()" onmousedown="event.stopPropagation()">
-		<div class="start-panel" id="panel">
+	<div class="dialog-mask hide" id="start" onclick="defaultStart(this)" onmousedown="event.stopPropagation()">
+		<div class="start-dialog dialog">
 			<div class="selectors" id="selectors"></div>
-			<div class="save-button" id="start-button" onclick="start()">Start</div>
+			<div class="start-button" id="start-button" onclick="start()">Start</div>
+		</div>
+	</div>
+	
+	<div class="dialog-mask hide" id="save" onclick="hide(this)" onmousedown="event.stopPropagation()">
+		<div class="save-dialog dialog" onclick="event.stopPropagation()">
+		
+			<!-- <div class="dialog-mask confirm-save-dialog-mask hide" id="confirm-save" onmousedown="event.stopPropagation()"> -->
+				<!-- <div class="confirm-save-dialog dialog" onclick="hide(this.parentNode); event.stopPropagation()"> -->
+					<!-- Are ya fuckin sure? -->
+				<!-- </div> -->
+			<!-- </div> -->
+		
+			<div class="save-files" id="save-files">
+				<input onkeydown="event.stopPropagation()"><span class="save-button" id="save-button" onclick="save()">Save</span>
+				<div class="file-list">
+					<div class="file-entry">
+						<span class="file-name">Kingdom 1</span>
+						<span class="file-time">Mar 19, 2020 6:03 PM</span>
+						<button class="file-time">Save</button>
+						<button class="file-time">Load</button>
+						<button class="file-time">Delete</button>
+					</div>
+					<div class="file-entry">
+						<span class="file-name">Kingdom 2</span>
+						<span class="file-time">Mar 20, 2020 7:40 PM</span>
+					</div>
+				</div>
+			</div>
+			
 		</div>
 	</div>
 	

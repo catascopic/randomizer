@@ -1,6 +1,7 @@
 :root {
 	--set-color: #0276FD;
 	--promo-color: #E3170D;
+	
 	--action: gainsboro;
 	--victory: #7BCC70; /* nightvision */
 	--reaction: #4F94CD; /* steelblue */
@@ -12,6 +13,9 @@
 
 /* DECK */
 
+* {
+	font-family: 'Fira Sans';
+}
 
 html, body {
 	height: 100%;
@@ -43,7 +47,6 @@ html, body {
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
-	box-sizing: border-box;
 }
 
 .deckName {
@@ -57,7 +60,6 @@ html, body {
 }
 
 .card {
-	font-family: 'Nova Oval';
 	cursor: move;
 	display: flex;
 	flex-direction: column;
@@ -66,6 +68,7 @@ html, body {
 }
 
 .name {
+	font-family: 'Nova Oval';
 	font-size: 14px;
 	text-align: center;
 	width: 100%;
@@ -121,6 +124,9 @@ html, body {
 }
 
 .any-selected > .card:not(.card-selected) {
+	/* Pseudo-transparency: https://stackoverflow.com/a/58227643/1940121
+	This gets the appearance of transparency against a white background without actually becoming transparent
+	to get pseudo-transparency t, we use contrast t / (2 - t) and brightness 2 - t */
 	filter: contrast(calc(0.5 / (2 - 0.5))) brightness(calc(2 - 0.5));
 }
 
@@ -173,8 +179,10 @@ hr {
 
 /* SELECTORS */
 
-.start-cover {
+.dialog-mask {
 	position: absolute;
+	top:0;
+	left:0;
 	width: 100%;
 	height: 100%;
 	background-color: rgba(0,0,0,0.4);
@@ -184,14 +192,18 @@ hr {
 	z-index: 999999;
 }
 
-.start-panel {
+.dialog {
+	background-color: white;
+	box-sizing: border-box;
+}
+
+.start-dialog {
 	margin-top: 24px;
 	width: 320px;
 	display: grid;
 	grid-gap: 6px;
 	position: absolute;
 	padding: 20px;
-	background-color: white;
 }
 
 .selectors {
@@ -233,7 +245,7 @@ hr {
 	background-color: var(--promo-color);
 }
 
-.save-button {
+.start-button {
 	font-family: 'Fira Sans';
 	display: flex;
 	justify-content: center;
@@ -249,6 +261,51 @@ hr {
 	color: gray;
 	border-color: lightgray;
 	cursor: not-allowed;
+}
+
+.save-dialog {
+	margin-top: 24px;
+	width: 480px;
+	position: absolute;
+	padding: 20px;
+	background-color: white;
+}
+
+.confirm-save-dialog {
+	margin-top: 24px;
+	position: absolute;
+	padding: 20px;
+}
+
+.file-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.file-entry {
+	margin-top: 4px;
+	display: flex;
+	background-color: #C8C8C8;
+	padding: 2px;
+}
+
+.file-entry:hover {
+	background-color: #87CEEB;
+}
+
+.file-name {
+	flex: 1;
+}
+
+.file-time {
+	font-family: 'Courier New';
+	font-size: 12px;
+	display: flex;
+	align-items: center;
+}
+
+.confirm-save-dialog-mask {
+	background-color: rgba(255, 0, 0, 0.4);
 }
 
 :not(.selectable) {
